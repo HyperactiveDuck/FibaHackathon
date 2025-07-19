@@ -36,14 +36,14 @@
     </div>
 </div>
 
-<!-- Charts and AI Chat Section -->
-<div style="display: grid; grid-template-columns: 1fr 1fr 320px; gap: 24px; margin-bottom: 32px;">
+<!-- Charts Section -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
     <!-- Spending by Category Pie Chart -->
     <div class="card">
         <h3 class="section-title">Spending by Category</h3>
-        <div style="height: 280px; display: flex; align-items: center; justify-content: center; position: relative;">
+        <div style="height: 400px; display: flex; align-items: center; justify-content: center; position: relative;">
             <!-- Pie Chart Container -->
-            <canvas id="spendingChart" width="200" height="200"></canvas>
+            <canvas id="spendingChart" width="280" height="280"></canvas>
             
             <!-- Legend positioned in top-right corner -->
             <div style="
@@ -102,9 +102,9 @@
     <!-- Account Distribution Pie Chart -->
     <div class="card">
         <h3 class="section-title">Account Distribution</h3>
-        <div style="height: 280px; display: flex; align-items: center; justify-content: center; position: relative;">
+        <div style="height: 400px; display: flex; align-items: center; justify-content: center; position: relative;">
             <!-- Pie Chart Container -->
-            <canvas id="accountChart" width="200" height="200"></canvas>
+            <canvas id="accountChart" width="280" height="280"></canvas>
             
             <!-- Legend positioned in top-right corner -->
             <div style="
@@ -135,110 +135,10 @@
             </div>
         </div>
     </div>
-    
-    <!-- AI Chat Assistant -->
-    <div class="card" style="display: flex; flex-direction: column; height: 380px;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #27272a;">
-            <div style="
-                width: 32px;
-                height: 32px;
-                background: linear-gradient(135deg, #22c55e, #3b82f6);
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 16px;
-            ">🤖</div>
-            <h3 style="color: #fafafa; font-size: 16px; font-weight: 600; margin: 0;">AI Assistant</h3>
-        </div>
-        
-        <!-- Chat Messages -->
-        <div style="flex: 1; overflow-y: auto; margin-bottom: 16px;">
-            <!-- AI Message -->
-            <div style="margin-bottom: 16px;">
-                <div style="
-                    background-color: #27272a;
-                    padding: 12px;
-                    border-radius: 12px 12px 12px 4px;
-                    margin-bottom: 4px;
-                ">
-                    <p style="color: #e4e4e7; font-size: 13px; line-height: 1.4;">
-                        Hi John! I noticed you're 15% over budget on shopping this month. Would you like some tips to optimize your spending?
-                    </p>
-                </div>
-                <p style="color: #71717a; font-size: 10px;">Just now</p>
-            </div>
-            
-            <!-- User Message -->
-            <div style="margin-bottom: 16px; text-align: right;">
-                <div style="
-                    background-color: #22c55e;
-                    color: white;
-                    padding: 12px;
-                    border-radius: 12px 12px 4px 12px;
-                    margin-bottom: 4px;
-                    display: inline-block;
-                    max-width: 80%;
-                ">
-                    <p style="font-size: 13px; line-height: 1.4;">
-                        Yes, please show me where I can save money.
-                    </p>
-                </div>
-                <p style="color: #71717a; font-size: 10px;">2 mins ago</p>
-            </div>
-            
-            <!-- AI Message -->
-            <div style="margin-bottom: 16px;">
-                <div style="
-                    background-color: #27272a;
-                    padding: 12px;
-                    border-radius: 12px 12px 12px 4px;
-                    margin-bottom: 4px;
-                ">
-                    <p style="color: #e4e4e7; font-size: 13px; line-height: 1.4;">
-                        Based on your patterns, you spend ₺120/week on takeaway. Cooking 3 meals at home could save you ₺50/week. Also, you have 3 unused subscriptions totaling ₺25/month.
-                    </p>
-                </div>
-                <p style="color: #71717a; font-size: 10px;">1 min ago</p>
-            </div>
-        </div>
-        
-        <!-- Chat Input -->
-        <div style="display: flex; gap: 8px;">
-            <input 
-                type="text" 
-                placeholder="Ask about your finances..."
-                style="
-                    flex: 1;
-                    background-color: #0a0a0a;
-                    border: 1px solid #27272a;
-                    color: #e4e4e7;
-                    padding: 10px 12px;
-                    border-radius: 8px;
-                    font-size: 12px;
-                    outline: none;
-                "
-                onkeypress="if(event.key==='Enter') sendMessage(this)"
-            />
-            <button 
-                onclick="sendMessage(this.previousElementSibling)"
-                style="
-                    background-color: #22c55e;
-                    color: white;
-                    border: none;
-                    padding: 10px 12px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-size: 12px;
-                ">
-                Send
-            </button>
-        </div>
-    </div>
 </div>
 
 <!-- Recent Activity -->
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px;">
     <!-- Recent Transactions -->
     <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -349,6 +249,106 @@
     </div>
 </div>
 
+<!-- AI Chat Assistant - Moved to Bottom -->
+<div class="card" style="display: flex; flex-direction: column; height: 500px;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #27272a;">
+        <div style="
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #22c55e, #3b82f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        ">🤖</div>
+        <h3 style="color: #fafafa; font-size: 16px; font-weight: 600; margin: 0;">AI Assistant</h3>
+    </div>
+    
+    <!-- Chat Messages -->
+    <div style="flex: 1; overflow-y: auto; margin-bottom: 16px;">
+        <!-- AI Message -->
+        <div style="margin-bottom: 16px;">
+            <div style="
+                background-color: #27272a;
+                padding: 12px;
+                border-radius: 12px 12px 12px 4px;
+                margin-bottom: 4px;
+            ">
+                <p style="color: #e4e4e7; font-size: 13px; line-height: 1.4;">
+                    Hi John! I noticed you're 15% over budget on shopping this month. Would you like some tips to optimize your spending?
+                </p>
+            </div>
+            <p style="color: #71717a; font-size: 10px;">Just now</p>
+        </div>
+        
+        <!-- User Message -->
+        <div style="margin-bottom: 16px; text-align: right;">
+            <div style="
+                background-color: #22c55e;
+                color: white;
+                padding: 12px;
+                border-radius: 12px 12px 4px 12px;
+                margin-bottom: 4px;
+                display: inline-block;
+                max-width: 80%;
+            ">
+                <p style="font-size: 13px; line-height: 1.4;">
+                    Yes, please show me where I can save money.
+                </p>
+            </div>
+            <p style="color: #71717a; font-size: 10px;">2 mins ago</p>
+        </div>
+        
+        <!-- AI Message -->
+        <div style="margin-bottom: 16px;">
+            <div style="
+                background-color: #27272a;
+                padding: 12px;
+                border-radius: 12px 12px 12px 4px;
+                margin-bottom: 4px;
+            ">
+                <p style="color: #e4e4e7; font-size: 13px; line-height: 1.4;">
+                    Based on your patterns, you spend ₺120/week on takeaway. Cooking 3 meals at home could save you ₺50/week. Also, you have 3 unused subscriptions totaling ₺25/month.
+                </p>
+            </div>
+            <p style="color: #71717a; font-size: 10px;">1 min ago</p>
+        </div>
+    </div>
+    
+    <!-- Chat Input -->
+    <div style="display: flex; gap: 8px;">
+        <input 
+            type="text" 
+            placeholder="Ask about your finances..."
+            style="
+                flex: 1;
+                background-color: #0a0a0a;
+                border: 1px solid #27272a;
+                color: #e4e4e7;
+                padding: 10px 12px;
+                border-radius: 8px;
+                font-size: 12px;
+                outline: none;
+            "
+            onkeypress="if(event.key==='Enter') sendMessage(this)"
+        />
+        <button 
+            onclick="sendMessage(this.previousElementSibling)"
+            style="
+                background-color: #22c55e;
+                color: white;
+                border: none;
+                padding: 10px 12px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 12px;
+            ">
+            Send
+        </button>
+    </div>
+</div>
+
 <script>
 // Hardcoded data - will be pulled from DB later
 const spendingData = [
@@ -369,7 +369,7 @@ function drawPieChart(canvasId, data) {
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = 90; // Increased back to 90 since we have more space now
+    const radius = 120; // Increased radius for larger charts
     
     let currentAngle = -Math.PI / 2; // Start from top
     
