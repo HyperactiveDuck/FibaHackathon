@@ -1,5 +1,5 @@
 from django.db import models
-from django.shortcuts import render
+from django.shortcuts import render, redirect  # Add redirect here
 from django.db.models import Sum, Count
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -15,10 +15,9 @@ def dashboard(request):
         user = request.user
     else:
         try:
-            user = User.objects.first()
+            user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
             if not user:
-                # Create a demo user if none exists
-                user = User.objects.create_user(username='demo_user', password='demo')
+                user = User.objects.first()  # Fallback if user ID 2 doesn't exist
         except:
             user = None
     
@@ -158,7 +157,9 @@ def accounts(request):
         user = request.user
     else:
         try:
-            user = User.objects.first()
+            user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
+            if not user:
+                user = User.objects.first()  # Fallback if user ID 2 doesn't exist
         except:
             user = None
     
@@ -214,7 +215,9 @@ def transactions(request):
     if request.user.is_authenticated:
         user = request.user
     else:
-        user = User.objects.first()
+        user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
+        if not user:
+            user = User.objects.first()  # Fallback if user ID 2 doesn't exist
     
     if not user:
         return render(request, 'finance/transactions.html', {'transactions': []})
@@ -331,7 +334,9 @@ def budgets(request):
         user = request.user
     else:
         try:
-            user = User.objects.first()
+            user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
+            if not user:
+                user = User.objects.first()  # Fallback if user ID 2 doesn't exist
         except:
             user = None
     
@@ -475,7 +480,9 @@ def analytics(request):
     if request.user.is_authenticated:
         user = request.user
     else:
-        user = User.objects.first()
+        user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
+        if not user:
+            user = User.objects.first()  # Fallback if user ID 2 doesn't exist
     
     if not user:
         return render(request, 'finance/analytics.html', {})
@@ -747,3 +754,77 @@ def export_analytics_report(request, transactions, period):
         ])
     
     return response
+
+def add_account(request):
+    if request.method == 'POST':
+        # Get demo user if not authenticated
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = User.objects.filter(username='ahmet_yilmaz').first()
+        
+        if not user:
+            return redirect('accounts')
+        
+        # Extract form data
+        bank_name = request.POST.get('bank_name')
+        account_type = request.POST.get('account_type')
+        account_number = request.POST.get('account_number')
+        iban = request.POST.get('iban')
+        balance = request.POST.get('balance')
+        
+        try:
+            # Create new account
+            Account.objects.create(
+                user=user,
+                bank_name=bank_name,
+                account_type=account_type,
+                iban=iban or f"TR{account_number}",  # Generate IBAN if not provided
+                balance=balance or 0.00
+            )
+            # Redirect back to accounts page
+            return redirect('accounts')
+        except Exception as e:
+            # Handle errors (duplicate IBAN, etc.)
+            print(f"Error creating account: {e}")
+            return redirect('accounts')
+    
+    # If GET request, redirect to accounts page
+    return redirect('accounts')
+
+def delete_account(request):
+    if request.method == 'POST':
+        # Get demo user if not authenticated
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = User.objects.filter(username='ahmet_yilmaz')
+        
+        if not user:
+            return redirect('accounts')
+        
+        account_id = request.POST.get('account_id')
+        
+        try:
+            # Get the account
+            account = Account.objects.get(pk=account_id, user=user)
+            
+            # Delete all related transactions first
+            Transaction.objects.filter(account=account).delete()
+            
+            # Delete the account
+            account.delete()
+            
+            # You could add a success message here
+            # messages.success(request, f'Successfully deleted {account.bank_name} account.')
+            
+        except Account.DoesNotExist:
+            # Account doesn't exist or doesn't belong to user
+            # messages.error(request, 'Account not found or access denied.')
+            pass
+        except Exception as e:
+            # Handle other errors
+            # messages.error(request, f'Error deleting account: {str(e)}')
+            print(f"Error deleting account: {e}")
+    
+    return redirect('accounts')
