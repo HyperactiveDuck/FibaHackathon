@@ -15,9 +15,9 @@
             font-size: 14px;
         ">
             <option>All Accounts</option>
-            <option>Akbank Business Current</option>
-            <option>Garanti BBVA Savings</option>
-            <option>İş Bankası Platinum</option>
+            {% for account in accounts %}
+            <option>{{ account.bank_name }} {{ account.get_account_type_display }}</option>
+            {% endfor %}
         </select>
         
         <select style="
@@ -66,272 +66,105 @@
     </button>
 </div>
 
-<!-- Transaction Summary Cards -->
+<!-- Transaction Summary Cards - USING REAL DATA -->
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 32px;">
     <div class="card">
         <h3>Total Inflow</h3>
-        <div class="metric-value metric-positive">₺3,250.00</div>
-        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">12 transactions</p>
+        <div class="metric-value metric-positive">₺{{ total_inflow|floatformat:2 }}</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Income transactions</p>
     </div>
     
     <div class="card">
         <h3>Total Outflow</h3>
-        <div class="metric-value metric-negative">₺2,840.75</div>
-        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">28 transactions</p>
+        <div class="metric-value metric-negative">₺{{ total_outflow|floatformat:2 }}</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Expense transactions</p>
     </div>
     
     <div class="card">
         <h3>Net Change</h3>
-        <div class="metric-value metric-positive">₺409.25</div>
-        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Last 30 days</p>
+        <div class="metric-value {% if net_change >= 0 %}metric-positive{% else %}metric-negative{% endif %}">
+            {% if net_change >= 0 %}+{% endif %}₺{{ net_change|floatformat:2 }}
+        </div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Balance change</p>
     </div>
     
     <div class="card">
-        <h3>Average Transaction</h3>
-        <div class="metric-value metric-neutral">₺71.02</div>
-        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Median: ₺24.50</p>
+        <h3>Total Transactions</h3>
+        <div class="metric-value metric-neutral">{{ transaction_count }}</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">All time</p>
     </div>
 </div>
 
-<!-- Transactions List -->
+<!-- Transactions List - USING REAL DATA -->
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <h3 class="section-title" style="margin-bottom: 0;">Recent Transactions</h3>
-        <p style="color: #71717a; font-size: 12px;">Showing 40 of 156 transactions</p>
+        <p style="color: #71717a; font-size: 12px;">Showing {{ transactions|length }} of {{ transaction_count }} transactions</p>
     </div>
     
+    {% for transaction in transactions %}
     <!-- Transaction Item -->
     <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 16px;">
             <div style="
                 width: 40px;
                 height: 40px;
-                background-color: #22c55e20;
+                background-color: {% if transaction.amount >= 0 %}#22c55e20{% else %}#ef444420{% endif %};
                 border-radius: 8px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 font-size: 18px;
-            ">💰</div>
+            ">
+                {% if transaction.category == 'FOOD_DINING' %}🍕
+                {% elif transaction.category == 'SHOPPING' %}🛒
+                {% elif transaction.category == 'TRANSPORTATION' %}🚇
+                {% elif transaction.category == 'BILLS_UTILITIES' %}⚡
+                {% elif transaction.category == 'ENTERTAINMENT' %}🎬
+                {% elif transaction.amount >= 0 %}💰
+                {% else %}💳
+                {% endif %}
+            </div>
             <div>
-                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Salary Payment</h4>
-                <p style="color: #71717a; font-size: 12px;">TÜRK TEKNOLOJI A.Ş. • Akbank Business Current</p>
-                <p style="color: #71717a; font-size: 11px;">Transaction ID: FT21334455667788</p>
+                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">
+                    {{ transaction.merchant|default:transaction.description }}
+                </h4>
+                <p style="color: #71717a; font-size: 12px;">
+                    {% if transaction.category == 'FOOD_DINING' %}Food & Dining
+                    {% elif transaction.category == 'SHOPPING' %}Shopping
+                    {% elif transaction.category == 'TRANSPORTATION' %}Transportation
+                    {% elif transaction.category == 'BILLS_UTILITIES' %}Bills & Utilities
+                    {% elif transaction.category == 'ENTERTAINMENT' %}Entertainment
+                    {% else %}{{ transaction.category }}
+                    {% endif %}
+                    • {{ transaction.account.bank_name }} {{ transaction.account.get_account_type_display }}
+                </p>
+                <p style="color: #71717a; font-size: 11px;">Transaction ID: {{ transaction.transaction_id }}</p>
             </div>
         </div>
         <div style="text-align: right;">
-            <p style="color: #22c55e; font-size: 16px; font-weight: 600;">+₺3,250.00</p>
-            <p style="color: #a1a1aa; font-size: 12px;">Today, 09:15</p>
+            <p style="color: {% if transaction.amount >= 0 %}#22c55e{% else %}#ef4444{% endif %}; font-size: 16px; font-weight: 600;">
+                {% if transaction.amount >= 0 %}+{% endif %}₺{{ transaction.amount|floatformat:2 }}
+            </p>
+            <p style="color: #a1a1aa; font-size: 12px;">{{ transaction.date|date:"M j, Y H:i" }}</p>
             <span style="
-                background-color: #22c55e20;
-                color: #22c55e;
+                background-color: {% if transaction.amount >= 0 %}#22c55e20{% else %}#ef444420{% endif %};
+                color: {% if transaction.amount >= 0 %}#22c55e{% else %}#ef4444{% endif %};
                 padding: 2px 6px;
                 border-radius: 4px;
                 font-size: 10px;
                 text-transform: uppercase;
-            ">Credit</span>
+            ">{% if transaction.amount >= 0 %}Credit{% else %}Debit{% endif %}</span>
         </div>
     </div>
-    
-    <!-- Transaction Item -->
-    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="
-                width: 40px;
-                height: 40px;
-                background-color: #ef444420;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
-            ">🍕</div>
-            <div>
-                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Yemeksepeti</h4>
-                <p style="color: #71717a; font-size: 12px;">Food & Dining • İş Bankası Platinum</p>
-                <p style="color: #71717a; font-size: 11px;">Transaction ID: CD21334455667789</p>
-            </div>
-        </div>
-        <div style="text-align: right;">
-            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-₺24.50</p>
-            <p style="color: #a1a1aa; font-size: 12px;">Yesterday, 19:42</p>
-            <span style="
-                background-color: #ef444420;
-                color: #ef4444;
-                padding: 2px 6px;
-                border-radius: 4px;
-                font-size: 10px;
-                text-transform: uppercase;
-            ">Debit</span>
-        </div>
+    {% empty %}
+    <div style="text-align: center; padding: 40px; color: #71717a;">
+        <p>No transactions found</p>
     </div>
-    
-    <!-- Transaction Item -->
-    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="
-                width: 40px;
-                height: 40px;
-                background-color: #ef444420;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
-            ">🛒</div>
-            <div>
-                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Migros</h4>
-                <p style="color: #71717a; font-size: 12px;">Groceries • Akbank Business Current</p>
-                <p style="color: #71717a; font-size: 11px;">Transaction ID: DC21334455667790</p>
-            </div>
-        </div>
-        <div style="text-align: right;">
-            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-₺67.89</p>
-            <p style="color: #a1a1aa; font-size: 12px;">Yesterday, 14:23</p>
-            <span style="
-                background-color: #ef444420;
-                color: #ef4444;
-                padding: 2px 6px;
-                border-radius: 4px;
-                font-size: 10px;
-                text-transform: uppercase;
-            ">Debit</span>
-        </div>
-    </div>
-    
-    <!-- Transaction Item -->
-    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="
-                width: 40px;
-                height: 40px;
-                background-color: #ef444420;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
-            ">⚡</div>
-            <div>
-                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">TEDAŞ</h4>
-                <p style="color: #71717a; font-size: 12px;">Bills & Utilities • Akbank Business Current</p>
-                <p style="color: #71717a; font-size: 11px;">Transaction ID: DD21334455667791</p>
-            </div>
-        </div>
-        <div style="text-align: right;">
-            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-₺120.00</p>
-            <p style="color: #a1a1aa; font-size: 12px;">2 days ago, 08:00</p>
-            <span style="
-                background-color: #3b82f620;
-                color: #3b82f6;
-                padding: 2px 6px;
-                border-radius: 4px;
-                font-size: 10px;
-                text-transform: uppercase;
-            ">Direct Debit</span>
-        </div>
-    </div>
-    
-    <!-- Transaction Item -->
-    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="
-                width: 40px;
-                height: 40px;
-                background-color: #ef444420;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
-            ">🚇</div>
-            <div>
-                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Istanbul Kart</h4>
-                <p style="color: #71717a; font-size: 12px;">Transportation • İş Bankası Platinum</p>
-                <p style="color: #71717a; font-size: 11px;">Transaction ID: CD21334455667792</p>
-            </div>
-        </div>
-        <div style="text-align: right;">
-            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-₺12.40</p>
-            <p style="color: #a1a1aa; font-size: 12px;">3 days ago, 16:35</p>
-            <span style="
-                background-color: #ef444420;
-                color: #ef4444;
-                padding: 2px 6px;
-                border-radius: 4px;
-                font-size: 10px;
-                text-transform: uppercase;
-            ">Contactless</span>
-        </div>
-    </div>
-    
-    <!-- Transaction Item -->
-    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="
-                width: 40px;
-                height: 40px;
-                background-color: #ef444420;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
-            ">🎬</div>
-            <div>
-                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Netflix</h4>
-                <p style="color: #71717a; font-size: 12px;">Entertainment • İş Bankası Platinum</p>
-                <p style="color: #71717a; font-size: 11px;">Transaction ID: CD21334455667793</p>
-            </div>
-        </div>
-        <div style="text-align: right;">
-            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-₺29.99</p>
-            <p style="color: #a1a1aa; font-size: 12px;">4 days ago, 10:00</p>
-            <span style="
-                background-color: #8b5cf620;
-                color: #8b5cf6;
-                padding: 2px 6px;
-                border-radius: 4px;
-                font-size: 10px;
-                text-transform: uppercase;
-            ">Subscription</span>
-        </div>
-    </div>
-    
-    <!-- Transaction Item -->
-    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="
-                width: 40px;
-                height: 40px;
-                background-color: #ef444420;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
-            ">⛽</div>
-            <div>
-                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Shell Petrol</h4>
-                <p style="color: #71717a; font-size: 12px;">Transportation • Akbank Business Current</p>
-                <p style="color: #71717a; font-size: 11px;">Transaction ID: DC21334455667794</p>
-            </div>
-        </div>
-        <div style="text-align: right;">
-            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-₺85.00</p>
-            <p style="color: #a1a1aa; font-size: 12px;">5 days ago, 12:15</p>
-            <span style="
-                background-color: #ef444420;
-                color: #ef4444;
-                padding: 2px 6px;
-                border-radius: 4px;
-                font-size: 10px;
-                text-transform: uppercase;
-            ">Chip & PIN</span>
-        </div>
-    </div>
+    {% endfor %}
     
     <!-- Load More Button -->
+    {% if transaction_count > 40 %}
     <div style="text-align: center; margin-top: 24px;">
         <button style="
             background-color: #27272a;
@@ -346,5 +179,6 @@
             Load More Transactions
         </button>
     </div>
+    {% endif %}
 </div>
 {% endblock %}

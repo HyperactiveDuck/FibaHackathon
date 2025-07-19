@@ -3,8 +3,13 @@
 {% block page_title %}Accounts{% endblock %}
 
 {% block content %}
+<!-- Header -->
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
-    <h2 class="section-title" style="margin-bottom: 0;">Connected Accounts</h2>
+    <div>
+        <h2 style="color: #fafafa; font-size: 24px; font-weight: 600; margin-bottom: 8px;">My Accounts</h2>
+        <p style="color: #71717a; font-size: 14px;">Manage your connected bank accounts</p>
+    </div>
+    
     <button style="
         background-color: #22c55e;
         color: white;
@@ -15,202 +20,175 @@
         cursor: pointer;
         transition: background-color 0.2s ease;
     " onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'">
-        + Connect Bank
+        + Connect New Account
     </button>
 </div>
 
-<!-- Current Accounts (Checking) -->
-<div style="margin-bottom: 32px;">
-    <h3 class="section-title" style="font-size: 16px; margin-bottom: 16px;">Current Accounts</h3>
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-                <div>
-                    <h4 style="color: #fafafa; font-size: 16px; margin-bottom: 4px;">Akbank Business Current</h4>
-                    <p style="color: #71717a; font-size: 12px;">TR58 0046 0000 0000 0012 3456 78</p>
-                    <p style="color: #71717a; font-size: 11px; margin-top: 2px;">Branch Code: 0046</p>
-                </div>
-                <div style="text-align: right;">
-                    <span style="
-                        background-color: #22c55e20;
-                        color: #22c55e;
-                        padding: 4px 8px;
-                        border-radius: 4px;
-                        font-size: 11px;
-                        font-weight: 500;
-                        text-transform: uppercase;
-                    ">Current</span>
-                    <p style="color: #71717a; font-size: 10px; margin-top: 4px;">Last sync: 2h ago</p>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 16px;">
-                <div>
-                    <p style="color: #a1a1aa; font-size: 12px;">Available Balance</p>
-                    <div class="metric-value metric-positive" style="font-size: 24px;">₺2,450.80</div>
-                </div>
-                <div style="text-align: right;">
-                    <p style="color: #a1a1aa; font-size: 12px;">Current Balance</p>
-                    <p style="color: #fafafa; font-size: 16px; font-weight: 600;">₺2,680.80</p>
-                </div>
-            </div>
-            <button style="
-                background-color: #27272a;
-                color: #e4e4e7;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 6px;
-                font-size: 12px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: background-color 0.2s ease;
-                width: 100%;
-            " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'"
-               onclick="window.location.href='{% url 'transactions' %}?account=akbank-current'">
-                View Transactions
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Savings Accounts -->
-<div style="margin-bottom: 32px;">
-    <h3 class="section-title" style="font-size: 16px; margin-bottom: 16px;">Savings Accounts</h3>
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-                <div>
-                    <h4 style="color: #fafafa; font-size: 16px; margin-bottom: 4px;">Garanti BBVA High Yield Savings</h4>
-                    <p style="color: #71717a; font-size: 12px;">TR33 0062 0000 0000 0098 7654 32</p>
-                    <p style="color: #71717a; font-size: 11px; margin-top: 2px;">Branch Code: 0062</p>
-                </div>
-                <div style="text-align: right;">
-                    <span style="
-                        background-color: #3b82f620;
-                        color: #3b82f6;
-                        padding: 4px 8px;
-                        border-radius: 4px;
-                        font-size: 11px;
-                        font-weight: 500;
-                        text-transform: uppercase;
-                    ">Savings</span>
-                    <p style="color: #71717a; font-size: 10px; margin-top: 4px;">Last sync: 1h ago</p>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 16px;">
-                <div>
-                    <p style="color: #a1a1aa; font-size: 12px;">Current Balance</p>
-                    <div class="metric-value metric-neutral" style="font-size: 24px;">₺15,750.25</div>
-                </div>
-                <div style="text-align: right;">
-                    <p style="color: #a1a1aa; font-size: 12px;">Interest Rate</p>
-                    <p style="color: #22c55e; font-size: 16px; font-weight: 600;">4.5% AER</p>
-                </div>
-            </div>
-            <button style="
-                background-color: #27272a;
-                color: #e4e4e7;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 6px;
-                font-size: 12px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: background-color 0.2s ease;
-                width: 100%;
-            " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'"
-               onclick="window.location.href='{% url 'transactions' %}?account=garanti-savings'">
-                View Transactions
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Credit Cards -->
-<div style="margin-bottom: 32px;">
-    <h3 class="section-title" style="font-size: 16px; margin-bottom: 16px;">Credit Cards</h3>
-    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-                <div>
-                    <h4 style="color: #fafafa; font-size: 16px; margin-bottom: 4px;">İş Bankası Platinum</h4>
-                    <p style="color: #71717a; font-size: 12px;">**** **** **** 9012</p>
-                    <p style="color: #71717a; font-size: 11px; margin-top: 2px;">PAN: 5555********9012</p>
-                </div>
-                <div style="text-align: right;">
-                    <span style="
-                        background-color: #ef444420;
-                        color: #ef4444;
-                        padding: 4px 8px;
-                        border-radius: 4px;
-                        font-size: 11px;
-                        font-weight: 500;
-                        text-transform: uppercase;
-                    ">Credit</span>
-                    <p style="color: #71717a; font-size: 10px; margin-top: 4px;">Last sync: 30m ago</p>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 16px;">
-                <div>
-                    <p style="color: #a1a1aa; font-size: 12px;">Outstanding Balance</p>
-                    <div class="metric-value metric-negative" style="font-size: 24px;">₺1,284.50</div>
-                </div>
-                <div style="text-align: right;">
-                    <p style="color: #a1a1aa; font-size: 12px;">Available Credit</p>
-                    <p style="color: #22c55e; font-size: 16px; font-weight: 600;">₺3,715.50</p>
-                    <p style="color: #71717a; font-size: 10px;">Limit: ₺5,000</p>
-                </div>
-            </div>
-            <button style="
-                background-color: #27272a;
-                color: #e4e4e7;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 6px;
-                font-size: 12px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: background-color 0.2s ease;
-                width: 100%;
-            " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'"
-               onclick="window.location.href='{% url 'transactions' %}?account=isbank-platinum'">
-                View Transactions
-            </button>
-        </div>
-    </div>
-</div>
-
 <!-- Account Summary -->
-<div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h3 class="section-title" style="margin-bottom: 0;">Account Summary</h3>
-        <p style="color: #71717a; font-size: 12px;">All balances as of latest sync</p>
+<div class="grid" style="margin-bottom: 32px;">
+    <div class="card">
+        <h3>Total Balance</h3>
+        <div class="metric-value metric-positive">₺{{ total_balance|floatformat:2 }}</div>
+        <p style="color: #22c55e; font-size: 12px; margin-top: 4px;">Across {{ account_count }} account{{ account_count|pluralize }}</p>
     </div>
     
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 24px;">
-        <div>
-            <p style="color: #a1a1aa; font-size: 14px; margin-bottom: 8px;">Total Current Accounts</p>
-            <p style="font-size: 24px; font-weight: 600; color: #22c55e;">₺2,450.80</p>
-        </div>
-        <div>
-            <p style="color: #a1a1aa; font-size: 14px; margin-bottom: 8px;">Total Savings</p>
-            <p style="font-size: 24px; font-weight: 600; color: #3b82f6;">₺15,750.25</p>
-        </div>
-        <div>
-            <p style="color: #a1a1aa; font-size: 14px; margin-bottom: 8px;">Credit Utilization</p>
-            <p style="font-size: 24px; font-weight: 600; color: #ef4444;">25.7%</p>
-        </div>
-        <div>
-            <p style="color: #a1a1aa; font-size: 14px; margin-bottom: 8px;">Net Position</p>
-            <p style="font-size: 24px; font-weight: 600; color: #22c55e;">₺16,916.55</p>
-        </div>
+    <div class="card">
+        <h3>Active Accounts</h3>
+        <div class="metric-value metric-neutral">{{ account_count }}</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Connected banks</p>
     </div>
-
-    <div style="border-top: 1px solid #27272a; padding-top: 16px;">
-        <p style="color: #71717a; font-size: 12px;">
-            <strong>Data provided via Open Banking APIs</strong> • 
-            Regulated by BDDK • 
-            Next auto-sync in 3 hours
-        </p>
+    
+    <div class="card">
+        <h3>Account Types</h3>
+        <div class="metric-value metric-neutral">3</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Savings, Business, Credit</p>
+    </div>
+    
+    <div class="card">
+        <h3>Last Sync</h3>
+        <div class="metric-value metric-neutral">2min</div>
+        <p style="color: #22c55e; font-size: 12px; margin-top: 4px;">All accounts synced</p>
     </div>
 </div>
+
+<!-- Accounts List -->
+{% for account_data in accounts_data %}
+<div class="card" style="margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="
+                width: 48px;
+                height: 48px;
+                background-color: {% if account_data.account.account_type == 'SAVINGS' %}#22c55e20{% elif account_data.account.account_type == 'BUSINESS' %}#3b82f620{% else %}#f59e0b20{% endif %};
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+            ">
+                {% if account_data.account.account_type == 'SAVINGS' %}💰
+                {% elif account_data.account.account_type == 'BUSINESS' %}🏢
+                {% elif account_data.account.account_type == 'CREDIT' %}💳
+                {% else %}🏦{% endif %}
+            </div>
+            <div>
+                <h3 style="color: #fafafa; font-size: 18px; font-weight: 600; margin-bottom: 4px;">
+                    {{ account_data.account.bank_name }}
+                </h3>
+                <p style="color: #71717a; font-size: 14px; margin-bottom: 2px;">
+                    {{ account_data.account.get_account_type_display }}
+                </p>
+                <p style="color: #71717a; font-size: 12px;">
+                    IBAN: {{ account_data.account.iban|slice:":4" }}****{{ account_data.account.iban|slice:"-4:" }}
+                </p>
+            </div>
+        </div>
+        
+        <div style="text-align: right;">
+            <div style="font-size: 24px; font-weight: 600; color: {% if account_data.account.balance >= 0 %}#22c55e{% else %}#ef4444{% endif %}; margin-bottom: 4px;">
+                ₺{{ account_data.account.balance|floatformat:2 }}
+            </div>
+            <p style="color: #71717a; font-size: 12px;">Available Balance</p>
+        </div>
+    </div>
+    
+    <!-- Account Stats -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; padding: 16px; background-color: #0a0a0a; border-radius: 8px;">
+        <div style="text-align: center;">
+            <p style="color: #22c55e; font-size: 16px; font-weight: 600;">₺{{ account_data.monthly_inflow|floatformat:2 }}</p>
+            <p style="color: #71717a; font-size: 11px;">Monthly Inflow</p>
+        </div>
+        <div style="text-align: center;">
+            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">₺{{ account_data.monthly_outflow|floatformat:2 }}</p>
+            <p style="color: #71717a; font-size: 11px;">Monthly Outflow</p>
+        </div>
+        <div style="text-align: center;">
+            <p style="color: #3b82f6; font-size: 16px; font-weight: 600;">{{ account_data.transaction_count }}</p>
+            <p style="color: #71717a; font-size: 11px;">Transactions</p>
+        </div>
+    </div>
+    
+    <!-- Recent Transactions -->
+    <div>
+        <h4 style="color: #fafafa; font-size: 14px; font-weight: 600; margin-bottom: 16px;">Recent Transactions</h4>
+        
+        {% for transaction in account_data.recent_transactions %}
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #27272a;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="
+                    width: 32px;
+                    height: 32px;
+                    background-color: {% if transaction.amount > 0 %}#22c55e20{% else %}#ef444420{% endif %};
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                ">
+                    {% if transaction.category == 'FOOD_DINING' %}🍕
+                    {% elif transaction.category == 'SALARY' %}💰
+                    {% elif transaction.category == 'SHOPPING' %}🛒
+                    {% elif transaction.category == 'BILLS_UTILITIES' %}⚡
+                    {% elif transaction.category == 'TRANSPORTATION' %}🚇
+                    {% elif transaction.category == 'ENTERTAINMENT' %}🎬
+                    {% else %}💳{% endif %}
+                </div>
+                <div>
+                    <p style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">
+                        {{ transaction.merchant|default:transaction.description }}
+                    </p>
+                    <p style="color: #71717a; font-size: 11px;">
+                        {{ transaction.date|date:"M j, Y g:i A" }}
+                    </p>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <p style="color: {% if transaction.amount > 0 %}#22c55e{% else %}#ef4444{% endif %}; font-size: 14px; font-weight: 600;">
+                    {% if transaction.amount > 0 %}+{% endif %}₺{{ transaction.amount|floatformat:2 }}
+                </p>
+                <span style="
+                    background-color: {% if transaction.amount > 0 %}#22c55e20{% else %}#ef444420{% endif %};
+                    color: {% if transaction.amount > 0 %}#22c55e{% else %}#ef4444{% endif %};
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 10px;
+                    text-transform: uppercase;
+                ">
+                    {% if transaction.amount > 0 %}Credit{% else %}Debit{% endif %}
+                </span>
+            </div>
+        </div>
+        {% empty %}
+        <p style="color: #71717a; font-size: 14px; text-align: center; padding: 20px;">No recent transactions</p>
+        {% endfor %}
+        
+        {% if account_data.recent_transactions %}
+        <div style="text-align: center; margin-top: 16px;">
+            <a href="{% url 'transactions' %}?account={{ account_data.account.account_id }}" style="
+                color: #22c55e;
+                text-decoration: none;
+                font-size: 12px;
+                font-weight: 500;
+            ">View All Transactions →</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<div class="card" style="text-align: center; padding: 48px;">
+    <div style="font-size: 48px; margin-bottom: 16px;">🏦</div>
+    <h3 style="color: #fafafa; margin-bottom: 8px;">No Accounts Connected</h3>
+    <p style="color: #71717a; margin-bottom: 24px;">Connect your first bank account to get started</p>
+    <button style="
+        background-color: #22c55e;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+    ">
+        Connect Account
+    </button>
+</div>
+{% endfor %}
 {% endblock %}
