@@ -6,25 +6,27 @@
 <!-- Header with time period selector -->
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
     <div style="display: flex; gap: 16px; align-items: center;">
-        <select style="
-            background-color: #111111;
-            border: 1px solid #27272a;
-            color: #e4e4e7;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-        ">
-            <option>Last 12 months</option>
-            <option>Last 6 months</option>
-            <option>Last 3 months</option>
-            <option>Year to date</option>
-            <option>Custom range</option>
-        </select>
+        <form method="GET" id="analyticsFilterForm">
+            <select name="period" onchange="submitAnalyticsFilter()" style="
+                background-color: #111111;
+                border: 1px solid #27272a;
+                color: #e4e4e7;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 14px;
+            ">
+                <option value="12" {% if request.GET.period == "12" or not request.GET.period %}selected{% endif %}>Last 12 months</option>
+                <option value="6" {% if request.GET.period == "6" %}selected{% endif %}>Last 6 months</option>
+                <option value="3" {% if request.GET.period == "3" %}selected{% endif %}>Last 3 months</option>
+                <option value="ytd" {% if request.GET.period == "ytd" %}selected{% endif %}>Year to date</option>
+                <option value="all" {% if request.GET.period == "all" %}selected{% endif %}>All time</option>
+            </select>
+        </form>
         
         <h2 class="section-title" style="margin-bottom: 0;">Financial Analytics</h2>
     </div>
     
-    <button style="
+    <button onclick="exportAnalyticsReport()" style="
         background-color: #22c55e;
         color: white;
         border: none;
@@ -38,32 +40,34 @@
     </button>
 </div>
 
-<!-- Key Metrics Overview - USING REAL DATA -->
-<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 32px;">
+<!-- Key Metrics Grid - NOW RESPONDS TO FILTER -->
+<div class="grid" style="margin-bottom: 32px;">
     <div class="card">
-        <h3>Current Month Spending</h3>
+        <h3>{{ period_label }} Spending</h3>
         <div class="metric-value metric-negative">₺{{ current_spending|floatformat:2 }}</div>
-        <p style="color: {% if spending_change >= 0 %}#ef4444{% else %}#22c55e{% endif %}; font-size: 12px; margin-top: 4px;">
-            {% if spending_change >= 0 %}↗{% else %}↘{% endif %} {{ spending_change|floatformat:1 }}% vs last month
+        <p style="color: {% if spending_change < 0 %}#22c55e{% else %}#ef4444{% endif %}; font-size: 12px; margin-top: 4px;">
+            {% if spending_change >= 0 %}↗ +{% else %}↘ {% endif %}{{ spending_change|floatformat:1 }}% vs previous period
         </p>
     </div>
     
     <div class="card">
-        <h3>Last Month Spending</h3>
-        <div class="metric-value metric-neutral">₺{{ last_spending|floatformat:2 }}</div>
-        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Previous month comparison</p>
-    </div>
-    
-    <div class="card">
-        <h3>Average Monthly Spending</h3>
+        <h3>Average Monthly</h3>
         <div class="metric-value metric-neutral">₺{{ avg_monthly_spending|floatformat:2 }}</div>
-        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">6-month average</p>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Based on {{ months_count }} month{{ months_count|pluralize }}</p>
     </div>
     
     <div class="card">
         <h3>Total Transactions</h3>
-        <div class="metric-value metric-positive">{{ total_transactions }}</div>
-        <p style="color: #22c55e; font-size: 12px; margin-top: 4px;">Last 6 months</p>
+        <div class="metric-value metric-neutral">{{ total_transactions }}</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">{{ period_label|lower }}</p>
+    </div>
+    
+    <div class="card">
+        <h3>Net Change</h3>
+        <div class="metric-value {% if net_change >= 0 %}metric-positive{% else %}metric-negative{% endif %}">
+            {% if net_change >= 0 %}+{% endif %}₺{{ net_change|floatformat:2 }}
+        </div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Income - Expenses</p>
     </div>
 </div>
 
@@ -205,6 +209,25 @@
 // USE REAL DATA FROM VIEWS
 const realMonthlyTrends = {{ monthly_trends|safe }};
 const realDailySpending = {{ daily_spending|safe }};
+
+// Filter functionality
+function submitAnalyticsFilter() {
+    document.getElementById('analyticsFilterForm').submit();
+}
+
+function exportAnalyticsReport() {
+    // Get current filter parameters
+    const form = document.getElementById('analyticsFilterForm');
+    const formData = new FormData(form);
+    const params = new URLSearchParams(formData);
+    
+    // Add export parameter
+    params.append('export', 'report');
+    
+    // Create download link
+    const url = window.location.pathname + '?' + params.toString();
+    window.location.href = url;
+}
 
 // Add this right after the realMonthlyTrends declaration for debugging
 console.log('Monthly trends data structure:', realMonthlyTrends);

@@ -1,3 +1,4 @@
+from django.db import models
 from django.shortcuts import render
 from django.db.models import Sum, Count
 from django.utils import timezone
@@ -5,6 +6,8 @@ from datetime import datetime, timedelta
 from .models import Account, Transaction
 from django.contrib.auth.models import User
 import json
+from django.http import HttpResponse
+import csv
 
 def dashboard(request):
     # For demo purposes, get the first user if not authenticated
@@ -207,46 +210,115 @@ def accounts(request):
     return render(request, 'finance/accounts.html', context)
 
 def transactions(request):
-    # Get demo user if not authenticated
+    # Get the user (same logic as before)
     if request.user.is_authenticated:
         user = request.user
     else:
-        try:
-            user = User.objects.first()
-        except:
-            user = None
+        user = User.objects.first()
     
-    if user:
-        # Get ALL user transactions FIRST (before slicing)
-        all_user_transactions = Transaction.objects.filter(user=user)
+    if not user:
+        return render(request, 'finance/transactions.html', {'transactions': []})
+    
+    # Start with all user transactions
+    transactions = Transaction.objects.filter(user=user)
+    
+    # Apply account filter - FIX: Use pk instead of id
+    account_filter = request.GET.get('account')
+    if account_filter:
+        try:
+            account_id = int(account_filter)
+            transactions = transactions.filter(account__pk=account_id)  # Changed from account_id to account__pk
+            print(f"Filtering by account PK: {account_id}")  # Debug line
+            print(f"Transactions found: {transactions.count()}")  # Debug line
+        except (ValueError, TypeError):
+            print(f"Invalid account filter: {account_filter}")  # Debug line
+            pass
+    
+    # Apply date range filter
+    date_range = request.GET.get('date_range', '30')
+    now = timezone.now()
+    
+    if date_range == '7':
+        start_date = now - timedelta(days=7)
+        transactions = transactions.filter(date__gte=start_date)
+    elif date_range == '30':
+        start_date = now - timedelta(days=30)
+        transactions = transactions.filter(date__gte=start_date)
+    elif date_range == '90':
+        start_date = now - timedelta(days=90)
+        transactions = transactions.filter(date__gte=start_date)
+    elif date_range == 'this_month':
+        start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        transactions = transactions.filter(date__gte=start_date)
+    elif date_range == 'last_month':
+        first_day_this_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        last_day_last_month = first_day_this_month - timedelta(days=1)
+        first_day_last_month = last_day_last_month.replace(day=1)
+        transactions = transactions.filter(
+            date__gte=first_day_last_month,
+            date__lt=first_day_this_month
+        )
+    # 'all' means no date filter
+    
+    # Apply category filter
+    category_filter = request.GET.get('category')
+    if category_filter:
+        transactions = transactions.filter(category=category_filter)
+    
+    # Apply search filter
+    search_query = request.GET.get('search')
+    if search_query:
+        transactions = transactions.filter(
+            models.Q(merchant__icontains=search_query) |
+            models.Q(description__icontains=search_query) |
+            models.Q(transaction_id__icontains=search_query)
+        )
+    
+    # Handle CSV export
+    if request.GET.get('export') == 'csv':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="transactions.csv"'
         
-        # Calculate summary stats from ALL transactions
-        total_inflow = all_user_transactions.filter(amount__gt=0).aggregate(Sum('amount'))['amount__sum'] or 0
-        total_outflow = abs(all_user_transactions.filter(amount__lt=0).aggregate(Sum('amount'))['amount__sum'] or 0)
-        net_change = total_inflow - total_outflow
+        writer = csv.writer(response)
+        writer.writerow(['Date', 'Merchant', 'Category', 'Amount', 'Account', 'Transaction ID'])
         
-        # NOW slice for display (this goes LAST)
-        user_transactions = all_user_transactions.order_by('-date')[:40]
+        for transaction in transactions.order_by('-date'):
+            writer.writerow([
+                transaction.date.strftime('%Y-%m-%d %H:%M'),
+                transaction.merchant or transaction.description,
+                transaction.get_category_display(),
+                str(transaction.amount),
+                f"{transaction.account.bank_name}",
+                transaction.transaction_id
+            ])
         
-        accounts = Account.objects.filter(user=user)
-        
-        context = {
-            'transactions': user_transactions,
-            'accounts': accounts,
-            'total_inflow': total_inflow,
-            'total_outflow': total_outflow,
-            'net_change': net_change,
-            'transaction_count': all_user_transactions.count(),
-        }
-    else:
-        context = {
-            'transactions': [],
-            'accounts': [],
-            'total_inflow': 0,
-            'total_outflow': 0,
-            'net_change': 0,
-            'transaction_count': 0,
-        }
+        return response
+    
+    # Order transactions by date (newest first)
+    transactions = transactions.order_by('-date')
+    
+    # Calculate summary statistics for filtered data
+    total_inflow = transactions.filter(amount__gt=0).aggregate(Sum('amount'))['amount__sum'] or 0
+    total_outflow = transactions.filter(amount__lt=0).aggregate(Sum('amount'))['amount__sum'] or 0
+    net_change = total_inflow + total_outflow  # outflow is negative, so this is correct
+    transaction_count = transactions.count()
+    
+    # Get user accounts for the filter dropdown
+    accounts = Account.objects.filter(user=user)
+    
+    # Debug: Print all accounts and their PKs
+    print("Available accounts:")
+    for acc in accounts:
+        print(f"  PK: {acc.pk}, Bank: {acc.bank_name}")  # Changed from acc.id to acc.pk
+    
+    context = {
+        'transactions': transactions,
+        'accounts': accounts,
+        'total_inflow': float(total_inflow),
+        'total_outflow': float(abs(total_outflow)),
+        'net_change': float(net_change),
+        'transaction_count': transaction_count,
+    }
     
     return render(request, 'finance/transactions.html', context)
 
@@ -399,173 +471,279 @@ def budgets(request):
     return render(request, 'finance/budgets.html', context)
 
 def analytics(request):
-    # Get demo user if not authenticated
+    # Get the user (same logic as before)
     if request.user.is_authenticated:
         user = request.user
     else:
-        try:
-            user = User.objects.first()
-        except:
-            user = None
+        user = User.objects.first()
     
-    if user:
-        # Get date ranges
-        current_month = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        last_month = (current_month - timedelta(days=1)).replace(day=1)
-        six_months_ago = current_month - timedelta(days=180)
+    if not user:
+        return render(request, 'finance/analytics.html', {})
+    
+    # Get time period filter
+    period = request.GET.get('period', '12')  # Default to 12 months
+    now = timezone.now()
+    
+    # Calculate date range based on period
+    if period == '3':
+        start_date = now - timedelta(days=90)
+        months_count = 3
+    elif period == '6':
+        start_date = now - timedelta(days=180)
+        months_count = 6
+    elif period == '12':
+        start_date = now - timedelta(days=365)
+        months_count = 12
+    elif period == 'ytd':
+        start_date = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        months_count = now.month
+    elif period == 'all':
+        start_date = None
+        # Calculate actual months span for 'all'
+        first_transaction = Transaction.objects.filter(user=user).order_by('date').first()
+        if first_transaction:
+            months_diff = (now.year - first_transaction.date.year) * 12 + (now.month - first_transaction.date.month)
+            months_count = max(1, months_diff)
+        else:
+            months_count = 12
+    else:
+        start_date = now - timedelta(days=365)  # Default to 12 months
+        months_count = 12
+    
+    # Filter transactions based on date range
+    transactions = Transaction.objects.filter(user=user)
+    if start_date:
+        transactions = transactions.filter(date__gte=start_date)
+    
+    # Handle export
+    if request.GET.get('export') == 'report':
+        return export_analytics_report(request, transactions, period)
+    
+    # UPDATED: Current period vs previous period comparison
+    if period == 'ytd':
+        # For YTD, compare with same period last year
+        current_period_start = start_date
+        current_period_end = now
         
-        # Get transactions for analysis
-        current_month_transactions = Transaction.objects.filter(
+        # Previous period: same months last year
+        prev_period_start = start_date.replace(year=start_date.year - 1)
+        prev_period_end = now.replace(year=now.year - 1)
+        
+        prev_period_transactions = Transaction.objects.filter(
             user=user,
-            date__gte=current_month
+            date__gte=prev_period_start,
+            date__lt=prev_period_end
         )
+    elif period == 'all':
+        # For "all time", compare first half vs second half
+        total_days = (now - start_date).days if start_date else 365
+        mid_point = start_date + timedelta(days=total_days // 2) if start_date else now - timedelta(days=182)
         
-        last_month_transactions = Transaction.objects.filter(
+        current_period_transactions = transactions.filter(date__gte=mid_point)
+        prev_period_transactions = transactions.filter(date__lt=mid_point)
+    else:
+        # For fixed periods (3, 6, 12 months), compare with previous equal period
+        current_period_start = start_date
+        current_period_end = now
+        
+        period_length = current_period_end - current_period_start
+        prev_period_start = current_period_start - period_length
+        prev_period_end = current_period_start
+        
+        current_period_transactions = transactions.filter(date__gte=current_period_start)
+        prev_period_transactions = Transaction.objects.filter(
             user=user,
-            date__gte=last_month,
-            date__lt=current_month
+            date__gte=prev_period_start,
+            date__lt=prev_period_end
         )
+    
+    # Calculate spending for current and previous periods
+    if period in ['all']:
+        current_spending = current_period_transactions.filter(amount__lt=0).aggregate(
+            total=Sum('amount'))['total'] or 0
+        prev_spending = prev_period_transactions.filter(amount__lt=0).aggregate(
+            total=Sum('amount'))['total'] or 0
+    else:
+        current_spending = transactions.filter(amount__lt=0).aggregate(
+            total=Sum('amount'))['total'] or 0
+        prev_spending = prev_period_transactions.filter(amount__lt=0).aggregate(
+            total=Sum('amount'))['total'] or 0
+    
+    current_spending = abs(float(current_spending))
+    prev_spending = abs(float(prev_spending))
+    
+    # Calculate spending change percentage
+    if prev_spending > 0:
+        spending_change = ((current_spending - prev_spending) / prev_spending) * 100
+    else:
+        spending_change = 0 if current_spending == 0 else 100
+    
+    # UPDATED: Average spending based on filtered period
+    total_spending = transactions.filter(amount__lt=0).aggregate(
+        total=Sum('amount'))['total'] or 0
+    avg_monthly_spending = abs(float(total_spending)) / months_count if months_count > 0 else 0
+    
+    # UPDATED: Total transactions for filtered period
+    total_transactions = transactions.count()
+    
+    # Monthly trends based on period (existing code is good)
+    monthly_trends = []
+    if period == 'all':
+        # Get all months with data
+        months_data = transactions.values(
+            'date__year', 'date__month'
+        ).annotate(
+            total_spending=Sum('amount', filter=models.Q(amount__lt=0))
+        ).order_by('date__year', 'date__month')
         
-        # Monthly spending comparison
-        current_spending = abs(current_month_transactions.filter(amount__lt=0).aggregate(Sum('amount'))['amount__sum'] or 0)
-        last_spending = abs(last_month_transactions.filter(amount__lt=0).aggregate(Sum('amount'))['amount__sum'] or 0)
-        
-        spending_change = ((current_spending - last_spending) / last_spending * 100) if last_spending > 0 else 0
-        
-        # Get 6-month spending trend
-        monthly_trends = []
-        for i in range(6):
-            month_start = current_month - timedelta(days=30*i)
-            month_end = month_start + timedelta(days=30)
+        for month_data in months_data:
+            month_name = datetime(month_data['date__year'], month_data['date__month'], 1).strftime('%b %Y')
+            spending = abs(float(month_data['total_spending'] or 0))
+            monthly_trends.append({'month': month_name, 'spending': spending})
+    else:
+        # Generate months based on period
+        current_date = start_date if start_date else now - timedelta(days=365)
+        while current_date <= now:
+            month_start = current_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            next_month = (month_start + timedelta(days=32)).replace(day=1)
             
-            month_spending = abs(Transaction.objects.filter(
-                user=user,
+            if next_month > now:
+                next_month = now
+            
+            month_spending = transactions.filter(
                 date__gte=month_start,
-                date__lt=month_end,
+                date__lt=next_month,
                 amount__lt=0
-            ).aggregate(Sum('amount'))['amount__sum'] or 0)
+            ).aggregate(total=Sum('amount'))['total'] or 0
             
             monthly_trends.append({
-                'month': month_start.strftime('%b'),
-                'spending': float(month_spending)
+                'month': month_start.strftime('%b %Y') if period == 'ytd' or period == 'all' else month_start.strftime('%b'),
+                'spending': abs(float(month_spending))
             })
-        
-        monthly_trends.reverse()  # Show oldest to newest
-        
-        # Top merchants by spending - FIXED: Use transaction_id instead of id
-        top_merchants = Transaction.objects.filter(
-            user=user,
-            date__gte=six_months_ago,
-            amount__lt=0
-        ).values('merchant').annotate(
-            total=Sum('amount'),
-            count=Count('transaction_id')  # Changed from Count('id')
-        ).order_by('total')[:5]
-        
-        # Format top merchants
-        top_merchants_data = []
-        for merchant in top_merchants:
-            if merchant['merchant']:
-                top_merchants_data.append({
-                    'name': merchant['merchant'],
-                    'total': abs(merchant['total']),
-                    'count': merchant['count']
-                })
-        
-        # Category analysis - FIXED: Use transaction_id instead of id
-        category_analysis = Transaction.objects.filter(
-            user=user,
-            date__gte=six_months_ago,
-            amount__lt=0
-        ).values('category').annotate(
-            total=Sum('amount'),
-            count=Count('transaction_id')  # Changed from Count('id')
-        ).order_by('total')
-        
-        category_labels = {
-            'FOOD_DINING': 'Food & Dining',
-            'SHOPPING': 'Shopping',
-            'TRANSPORTATION': 'Transportation',
-            'BILLS_UTILITIES': 'Bills & Utilities',
-            'ENTERTAINMENT': 'Entertainment',
-        }
-        
-        category_trends = []
-        for cat in category_analysis:
-            if cat['category']:
-                category_trends.append({
-                    'category': cat['category'],
-                    'label': category_labels.get(cat['category'], cat['category']),
-                    'total': abs(cat['total']),
-                    'count': cat['count'],
-                    'avg_transaction': abs(cat['total']) / cat['count'] if cat['count'] > 0 else 0
-                })
-        
-        # Daily spending pattern (last 30 days)
-        thirty_days_ago = timezone.now() - timedelta(days=30)
-        daily_spending = []
-        for i in range(30):
-            day = thirty_days_ago + timedelta(days=i)
-            day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
-            day_end = day_start + timedelta(days=1)
             
-            day_total = abs(Transaction.objects.filter(
-                user=user,
-                date__gte=day_start,
-                date__lt=day_end,
-                amount__lt=0
-            ).aggregate(Sum('amount'))['amount__sum'] or 0)
-            
-            daily_spending.append({
-                'date': day.strftime('%m/%d'),
-                'spending': float(day_total)
-            })
+            current_date = next_month
+            if current_date >= now:
+                break
+    
+    # UPDATED: Top merchants for the filtered period
+    top_merchants = transactions.filter(amount__lt=0).values('merchant').annotate(
+        total=Sum('amount'),
+        count=Count('transaction_id')
+    ).exclude(merchant__isnull=True).exclude(merchant='').order_by('total')[:10]
+    
+    # Convert to positive and format
+    for merchant in top_merchants:
+        merchant['total'] = abs(float(merchant['total']))
+        merchant['name'] = merchant['merchant']
+    
+    # UPDATED: Category trends for the filtered period
+    category_trends = transactions.filter(amount__lt=0).values('category').annotate(
+        total=Sum('amount'),
+        count=Count('transaction_id'),
+        avg_transaction=models.Avg('amount')
+    ).order_by('total')
+    
+    # Format category trends
+    category_labels = {
+        'FOOD_DINING': 'Food & Dining',
+        'SHOPPING': 'Shopping', 
+        'TRANSPORTATION': 'Transportation',
+        'BILLS_UTILITIES': 'Bills & Utilities',
+        'ENTERTAINMENT': 'Entertainment',
+        'TRANSFER': 'Transfer',
+        'OTHER': 'Other'
+    }
+    
+    formatted_category_trends = []
+    for cat in category_trends:
+        formatted_category_trends.append({
+            'label': category_labels.get(cat['category'], cat['category']),
+            'total': abs(float(cat['total'])),
+            'count': cat['count'],
+            'avg_transaction': abs(float(cat['avg_transaction'] or 0))
+        })
+    
+    # UPDATED: Account performance for the filtered period
+    accounts = Account.objects.filter(user=user)
+    account_performance = []
+    
+    for account in accounts:
+        account_transactions = transactions.filter(account=account)
+        inflow = account_transactions.filter(amount__gt=0).aggregate(
+            total=Sum('amount'))['total'] or 0
+        outflow = account_transactions.filter(amount__lt=0).aggregate(
+            total=Sum('amount'))['total'] or 0
         
-        # Account performance
-        accounts = Account.objects.filter(user=user)
-        account_performance = []
-        for account in accounts:
-            account_transactions = Transaction.objects.filter(
-                account=account,
-                date__gte=current_month
-            )
-            
-            inflow = account_transactions.filter(amount__gt=0).aggregate(Sum('amount'))['amount__sum'] or 0
-            outflow = abs(account_transactions.filter(amount__lt=0).aggregate(Sum('amount'))['amount__sum'] or 0)
-            
-            account_performance.append({
-                'name': f"{account.bank_name} {account.get_account_type_display()}",
-                'balance': float(account.balance),
-                'inflow': float(inflow),
-                'outflow': float(outflow),
-                'net_change': float(inflow - outflow)
-            })
-        
-        context = {
-            'current_spending': current_spending,
-            'last_spending': last_spending,
-            'spending_change': round(spending_change, 1),
-            'monthly_trends': json.dumps(monthly_trends),
-            'daily_spending': json.dumps(daily_spending),
-            'top_merchants': top_merchants_data,
-            'category_trends': category_trends,
-            'account_performance': account_performance,
-            'total_transactions': Transaction.objects.filter(user=user, date__gte=six_months_ago).count(),
-            'avg_monthly_spending': sum([trend['spending'] for trend in monthly_trends]) / len(monthly_trends) if monthly_trends else 0,
-        }
-    else:
-        # Fallback data
-        context = {
-            'current_spending': 0,
-            'last_spending': 0,
-            'spending_change': 0,
-            'monthly_trends': json.dumps([]),
-            'daily_spending': json.dumps([]),
-            'top_merchants': [],
-            'category_trends': [],
-            'account_performance': [],
-            'total_transactions': 0,
-            'avg_monthly_spending': 0,
-        }
+        account_performance.append({
+            'name': f"{account.bank_name} {getattr(account, 'account_type', '')}",
+            'balance': float(account.balance),
+            'inflow': float(inflow),
+            'outflow': abs(float(outflow)),
+            'net_change': float(inflow + outflow),  # outflow is negative
+            'transaction_count': account_transactions.count()
+        })
+    
+    # UPDATED: Additional metrics for filtered period
+    total_inflow = transactions.filter(amount__gt=0).aggregate(Sum('amount'))['amount__sum'] or 0
+    total_outflow = transactions.filter(amount__lt=0).aggregate(Sum('amount'))['amount__sum'] or 0
+    net_change = float(total_inflow) + float(total_outflow)  # outflow is negative
+    
+    # Average transaction amount for the period
+    avg_transaction_amount = transactions.aggregate(models.Avg('amount'))['amount__avg'] or 0
+    
+    # Period label for display
+    period_labels = {
+        '3': 'Last 3 Months',
+        '6': 'Last 6 Months', 
+        '12': 'Last 12 Months',
+        'ytd': 'Year to Date',
+        'all': 'All Time'
+    }
+    period_label = period_labels.get(period, 'Last 12 Months')
+    
+    context = {
+        'current_spending': current_spending,
+        'last_spending': prev_spending,  # Now represents previous period, not just last month
+        'spending_change': spending_change,
+        'avg_monthly_spending': avg_monthly_spending,
+        'total_transactions': total_transactions,
+        'total_inflow': float(total_inflow),
+        'total_outflow': abs(float(total_outflow)),
+        'net_change': net_change,
+        'avg_transaction_amount': abs(float(avg_transaction_amount)),
+        'period_label': period_label,
+        'months_count': months_count,
+        'monthly_trends': json.dumps(monthly_trends),
+        'daily_spending': json.dumps([]),  # Placeholder for daily data
+        'top_merchants': top_merchants,
+        'category_trends': formatted_category_trends,
+        'account_performance': account_performance,
+    }
     
     return render(request, 'finance/analytics.html', context)
+
+def export_analytics_report(request, transactions, period):
+    """Export analytics data as CSV"""
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="analytics_report_{period}_months.csv"'
+    
+    writer = csv.writer(response)
+    
+    # Write summary data
+    writer.writerow(['Analytics Report'])
+    writer.writerow(['Period', f'{period} months' if period.isdigit() else period])
+    writer.writerow(['Generated', timezone.now().strftime('%Y-%m-%d %H:%M')])
+    writer.writerow([])
+    
+    # Write transactions
+    writer.writerow(['Date', 'Merchant', 'Category', 'Amount', 'Account'])
+    for transaction in transactions.order_by('-date'):
+        writer.writerow([
+            transaction.date.strftime('%Y-%m-%d %H:%M'),
+            transaction.merchant or transaction.description,
+            transaction.get_category_display() if hasattr(transaction, 'get_category_display') else transaction.category,
+            str(transaction.amount),
+            transaction.account.bank_name
+        ])
+    
+    return response

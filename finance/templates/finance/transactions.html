@@ -5,8 +5,8 @@
 {% block content %}
 <!-- Header with filters -->
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
-    <div style="display: flex; gap: 16px; align-items: center;">
-        <select style="
+    <form method="GET" id="filterForm" style="display: flex; gap: 16px; align-items: center;">
+        <select name="account" onchange="submitFilters()" style="
             background-color: #111111;
             border: 1px solid #27272a;
             color: #e4e4e7;
@@ -14,13 +14,15 @@
             border-radius: 6px;
             font-size: 14px;
         ">
-            <option>All Accounts</option>
+            <option value="">All Accounts</option>
             {% for account in accounts %}
-            <option>{{ account.bank_name }} {{ account.get_account_type_display }}</option>
+            <option value="{{ account.pk }}" {% if request.GET.account == account.pk|stringformat:"s" %}selected{% endif %}>
+                {{ account.bank_name }}{% if account.account_type %} ({{ account.account_type }}){% endif %}
+            </option>
             {% endfor %}
         </select>
         
-        <select style="
+        <select name="date_range" onchange="submitFilters()" style="
             background-color: #111111;
             border: 1px solid #27272a;
             color: #e4e4e7;
@@ -28,14 +30,15 @@
             border-radius: 6px;
             font-size: 14px;
         ">
-            <option>Last 30 days</option>
-            <option>Last 7 days</option>
-            <option>Last 90 days</option>
-            <option>This month</option>
-            <option>Last month</option>
+            <option value="30" {% if request.GET.date_range == "30" or not request.GET.date_range %}selected{% endif %}>Last 30 days</option>
+            <option value="7" {% if request.GET.date_range == "7" %}selected{% endif %}>Last 7 days</option>
+            <option value="90" {% if request.GET.date_range == "90" %}selected{% endif %}>Last 90 days</option>
+            <option value="this_month" {% if request.GET.date_range == "this_month" %}selected{% endif %}>This month</option>
+            <option value="last_month" {% if request.GET.date_range == "last_month" %}selected{% endif %}>Last month</option>
+            <option value="all" {% if request.GET.date_range == "all" %}selected{% endif %}>All time</option>
         </select>
         
-        <select style="
+        <select name="category" onchange="submitFilters()" style="
             background-color: #111111;
             border: 1px solid #27272a;
             color: #e4e4e7;
@@ -43,16 +46,46 @@
             border-radius: 6px;
             font-size: 14px;
         ">
-            <option>All Categories</option>
-            <option>Food & Dining</option>
-            <option>Shopping</option>
-            <option>Transportation</option>
-            <option>Bills & Utilities</option>
-            <option>Entertainment</option>
+            <option value="">All Categories</option>
+            <option value="FOOD_DINING" {% if request.GET.category == "FOOD_DINING" %}selected{% endif %}>Food & Dining</option>
+            <option value="SHOPPING" {% if request.GET.category == "SHOPPING" %}selected{% endif %}>Shopping</option>
+            <option value="TRANSPORTATION" {% if request.GET.category == "TRANSPORTATION" %}selected{% endif %}>Transportation</option>
+            <option value="BILLS_UTILITIES" {% if request.GET.category == "BILLS_UTILITIES" %}selected{% endif %}>Bills & Utilities</option>
+            <option value="ENTERTAINMENT" {% if request.GET.category == "ENTERTAINMENT" %}selected{% endif %}>Entertainment</option>
+            <option value="TRANSFER" {% if request.GET.category == "TRANSFER" %}selected{% endif %}>Transfer</option>
+            <option value="OTHER" {% if request.GET.category == "OTHER" %}selected{% endif %}>Other</option>
         </select>
-    </div>
+        
+        <!-- Search Input -->
+        <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search transactions..." 
+               onkeyup="delayedSubmit()" style="
+            background-color: #111111;
+            border: 1px solid #27272a;
+            color: #e4e4e7;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 200px;
+        ">
+        
+        <!-- Clear Filters Button -->
+        {% if request.GET.account or request.GET.category or request.GET.search or request.GET.date_range != "30" %}
+        <button type="button" onclick="clearFilters()" style="
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        " onmouseover="this.style.backgroundColor='#dc2626'" onmouseout="this.style.backgroundColor='#ef4444'">
+            Clear
+        </button>
+        {% endif %}
+    </form>
     
-    <button style="
+    <button onclick="exportCSV()" style="
         background-color: #22c55e;
         color: white;
         border: none;
@@ -197,6 +230,51 @@
 </div>
 
 <script>
+let searchTimeout;
+
+function submitFilters() {
+    document.getElementById('filterForm').submit();
+}
+
+function delayedSubmit() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        document.getElementById('filterForm').submit();
+    }, 500); // Wait 500ms after user stops typing
+}
+
+function clearFilters() {
+    // Reset all form fields
+    const form = document.getElementById('filterForm');
+    const selects = form.querySelectorAll('select');
+    const inputs = form.querySelectorAll('input');
+    
+    selects.forEach(select => {
+        select.selectedIndex = 0;
+    });
+    
+    inputs.forEach(input => {
+        input.value = '';
+    });
+    
+    // Submit the cleared form
+    form.submit();
+}
+
+function exportCSV() {
+    // Get current filter parameters
+    const form = document.getElementById('filterForm');
+    const formData = new FormData(form);
+    const params = new URLSearchParams(formData);
+    
+    // Add export parameter
+    params.append('export', 'csv');
+    
+    // Create download link
+    const url = window.location.pathname + '?' + params.toString();
+    window.location.href = url;
+}
+
 function toggleTransactionsList() {
     const hiddenItems = document.querySelectorAll('.transaction-item[data-index]');
     const toggleBtn = document.getElementById('toggleTransactions');
