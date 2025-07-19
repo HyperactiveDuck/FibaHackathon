@@ -88,14 +88,30 @@ def dashboard(request):
         # Account distribution
         account_distribution = []
         total_balance_float = float(total_balance) if total_balance else 0
-        for account in accounts:
+        colors = [
+            '#ef4444','#6366f1' , '#14b8a6', '#eab308', '#22c55e',
+            '#84cc16', '#10b981', '#f59e0b', '#06b6d4', '#0ea5e9',
+            '#3b82f6', '#f97316', '#8b5cf6', '#a855f7', '#d946ef',
+            '#ec4899', '#f43f5e'
+        ]
+        
+        for index, account in enumerate(accounts):
             account_balance = float(account.balance)  # Convert Decimal to float
             percentage = (account_balance / total_balance_float * 100) if total_balance_float > 0 else 0
+            
+            # Create unique label for each account
+            label = f"{account.bank_name}"
+            if hasattr(account, 'account_type') and account.account_type:
+                label += f" ({account.account_type})"
+            elif hasattr(account, 'account_number') and account.account_number:
+                last_four = str(account.account_number)[-4:]
+                label += f" ***{last_four}"
+            
             account_distribution.append({
-                'label': f'{account.bank_name} {account.get_account_type_display()}',
+                'label': label,
                 'value': account_balance,  # Now it's a float
                 'percentage': round(percentage, 1),
-                'color': '#22c55e' if account.account_type == 'SAVINGS' else '#3b82f6'
+                'color': colors[index % len(colors)]  # Ensure unique color per account
             })
         
         # Recent transactions

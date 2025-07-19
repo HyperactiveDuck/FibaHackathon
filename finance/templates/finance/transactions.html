@@ -102,71 +102,80 @@
         <p style="color: #71717a; font-size: 12px;">Showing {{ transactions|length }} of {{ transaction_count }} transactions</p>
     </div>
     
-    {% for transaction in transactions %}
-    <!-- Transaction Item -->
-    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="
-                width: 40px;
-                height: 40px;
-                background-color: {% if transaction.amount >= 0 %}#22c55e20{% else %}#ef444420{% endif %};
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
-            ">
-                {% if transaction.category == 'FOOD_DINING' %}🍕
-                {% elif transaction.category == 'SHOPPING' %}🛒
-                {% elif transaction.category == 'TRANSPORTATION' %}🚇
-                {% elif transaction.category == 'BILLS_UTILITIES' %}⚡
-                {% elif transaction.category == 'ENTERTAINMENT' %}🎬
-                {% elif transaction.amount >= 0 %}💰
-                {% else %}💳
-                {% endif %}
-            </div>
-            <div>
-                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">
-                    {{ transaction.merchant|default:transaction.description }}
-                </h4>
-                <p style="color: #71717a; font-size: 12px;">
-                    {% if transaction.category == 'FOOD_DINING' %}Food & Dining
-                    {% elif transaction.category == 'SHOPPING' %}Shopping
-                    {% elif transaction.category == 'TRANSPORTATION' %}Transportation
-                    {% elif transaction.category == 'BILLS_UTILITIES' %}Bills & Utilities
-                    {% elif transaction.category == 'ENTERTAINMENT' %}Entertainment
-                    {% else %}{{ transaction.category }}
+    <div id="transactionsList">
+        {% for transaction in transactions %}
+        <!-- Transaction Item -->
+        <div class="transaction-item" style="
+            border-bottom: 1px solid #27272a; 
+            padding: 16px 0; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            {% if forloop.counter > 5 %}display: none;{% endif %}
+        " data-index="{{ forloop.counter }}">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="
+                    width: 40px;
+                    height: 40px;
+                    background-color: {% if transaction.amount >= 0 %}#22c55e20{% else %}#ef444420{% endif %};
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 18px;
+                ">
+                    {% if transaction.category == 'FOOD_DINING' %}🍕
+                    {% elif transaction.category == 'SHOPPING' %}🛒
+                    {% elif transaction.category == 'TRANSPORTATION' %}🚇
+                    {% elif transaction.category == 'BILLS_UTILITIES' %}⚡
+                    {% elif transaction.category == 'ENTERTAINMENT' %}🎬
+                    {% elif transaction.amount >= 0 %}💰
+                    {% else %}💳
                     {% endif %}
-                    • {{ transaction.account.bank_name }} {{ transaction.account.get_account_type_display }}
+                </div>
+                <div>
+                    <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">
+                        {{ transaction.merchant|default:transaction.description }}
+                    </h4>
+                    <p style="color: #71717a; font-size: 12px;">
+                        {% if transaction.category == 'FOOD_DINING' %}Food & Dining
+                        {% elif transaction.category == 'SHOPPING' %}Shopping
+                        {% elif transaction.category == 'TRANSPORTATION' %}Transportation
+                        {% elif transaction.category == 'BILLS_UTILITIES' %}Bills & Utilities
+                        {% elif transaction.category == 'ENTERTAINMENT' %}Entertainment
+                        {% else %}{{ transaction.category }}
+                        {% endif %}
+                        • {{ transaction.account.bank_name }} {{ transaction.account.get_account_type_display }}
+                    </p>
+                    <p style="color: #71717a; font-size: 11px;">Transaction ID: {{ transaction.transaction_id }}</p>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <p style="color: {% if transaction.amount >= 0 %}#22c55e{% else %}#ef4444{% endif %}; font-size: 16px; font-weight: 600;">
+                    {% if transaction.amount >= 0 %}+{% endif %}₺{{ transaction.amount|floatformat:2 }}
                 </p>
-                <p style="color: #71717a; font-size: 11px;">Transaction ID: {{ transaction.transaction_id }}</p>
+                <p style="color: #a1a1aa; font-size: 12px;">{{ transaction.date|date:"M j, Y H:i" }}</p>
+                <span style="
+                    background-color: {% if transaction.amount >= 0 %}#22c55e20{% else %}#ef444420{% endif %};
+                    color: {% if transaction.amount >= 0 %}#22c55e{% else %}#ef4444{% endif %};
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 10px;
+                    text-transform: uppercase;
+                ">{% if transaction.amount >= 0 %}Credit{% else %}Debit{% endif %}</span>
             </div>
         </div>
-        <div style="text-align: right;">
-            <p style="color: {% if transaction.amount >= 0 %}#22c55e{% else %}#ef4444{% endif %}; font-size: 16px; font-weight: 600;">
-                {% if transaction.amount >= 0 %}+{% endif %}₺{{ transaction.amount|floatformat:2 }}
-            </p>
-            <p style="color: #a1a1aa; font-size: 12px;">{{ transaction.date|date:"M j, Y H:i" }}</p>
-            <span style="
-                background-color: {% if transaction.amount >= 0 %}#22c55e20{% else %}#ef444420{% endif %};
-                color: {% if transaction.amount >= 0 %}#22c55e{% else %}#ef4444{% endif %};
-                padding: 2px 6px;
-                border-radius: 4px;
-                font-size: 10px;
-                text-transform: uppercase;
-            ">{% if transaction.amount >= 0 %}Credit{% else %}Debit{% endif %}</span>
+        {% empty %}
+        <div style="text-align: center; padding: 40px; color: #71717a;">
+            <p>No transactions found</p>
         </div>
+        {% endfor %}
     </div>
-    {% empty %}
-    <div style="text-align: center; padding: 40px; color: #71717a;">
-        <p>No transactions found</p>
-    </div>
-    {% endfor %}
     
-    <!-- Load More Button -->
-    {% if transaction_count > 40 %}
+    <!-- Show More/Less Button -->
+    {% if transactions|length > 5 %}
     <div style="text-align: center; margin-top: 24px;">
-        <button style="
+        <button id="toggleTransactions" onclick="toggleTransactionsList()" style="
             background-color: #27272a;
             color: #e4e4e7;
             border: none;
@@ -174,11 +183,65 @@
             border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto;
         " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'">
-            Load More Transactions
+            <span id="toggleText">Show More</span>
+            <span id="toggleIcon" style="transition: transform 0.2s ease;">▼</span>
         </button>
     </div>
     {% endif %}
 </div>
+
+<script>
+function toggleTransactionsList() {
+    const hiddenItems = document.querySelectorAll('.transaction-item[data-index]');
+    const toggleBtn = document.getElementById('toggleTransactions');
+    const toggleText = document.getElementById('toggleText');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    let isExpanded = toggleText.textContent === 'Show Less';
+    
+    hiddenItems.forEach((item, index) => {
+        const itemIndex = parseInt(item.getAttribute('data-index'));
+        
+        if (itemIndex > 5) {
+            if (isExpanded) {
+                // Collapse
+                item.style.display = 'none';
+                item.style.opacity = '0';
+            } else {
+                // Expand
+                item.style.display = 'flex';
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                }, 50 * (itemIndex - 5)); // Staggered animation
+            }
+        }
+    });
+    
+    // Update button text and icon
+    if (isExpanded) {
+        toggleText.textContent = 'Show More';
+        toggleIcon.style.transform = 'rotate(0deg)';
+    } else {
+        toggleText.textContent = 'Show Less';
+        toggleIcon.style.transform = 'rotate(180deg)';
+    }
+}
+
+// Add smooth opacity transitions
+document.addEventListener('DOMContentLoaded', function() {
+    const transactionItems = document.querySelectorAll('.transaction-item');
+    transactionItems.forEach(item => {
+        item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        if (item.style.display !== 'none') {
+            item.style.opacity = '1';
+        }
+    });
+});
+</script>
 {% endblock %}
