@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Chat</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --input-bg: #2a2a2a;
+            --bot-color: #3a3f4b;
+            --user-color: #005c9e;
+            --text-color: #e0e0e0;
+            --accent: #4fc3f7;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 30px;  /* ⬅️ Top/Bottom: 20px, Left/Right: 30px */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .user {
+            background-color: var(--user-color);
+            align-self: flex-end;
+        }
+
+        .bot {
+            background-color: var(--bot-color);
+            align-self: flex-start;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 12px 30px;
+            background-color: var(--input-bg);
+            border-top: 1px solid #333;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #333;
+            color: var(--text-color);
+        }
+
+        .chat-input input:focus {
+            outline: 2px solid var(--accent);
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 12px 18px;
+            border: none;
+            background-color: var(--accent);
+            color: #000;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-input button:hover {
+            background-color: #29b6f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-window" id="chatWindow">
+        <div class="message bot">Hi! Ask me anything.</div>
+        <div class="message user">Hello! Who are you?</div>
+        <div class="message bot">I'm your assistant.</div>
+    </div>
+
+    <form class="chat-input" onsubmit="sendMessage(event)">
+        <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" required>
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        function sendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById("messageInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            const userMsg = document.createElement("div");
+            userMsg.className = "message user";
+            userMsg.innerText = text;
+            document.getElementById("chatWindow").appendChild(userMsg);
+
+            input.value = "";
+
+            const botMsg = document.createElement("div");
+            botMsg.className = "message bot";
+            botMsg.innerText = "🤖 Echo: " + text;
+
+            setTimeout(() => {
+                document.getElementById("chatWindow").appendChild(botMsg);
+                document.getElementById("chatWindow").scrollTop = document.getElementById("chatWindow").scrollHeight;
+            }, 400);
+        }
+    </script>
+</body>
+</html>
