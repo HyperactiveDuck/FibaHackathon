@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid">
+    <div class="card">
+        <h3>Total Balance</h3>
+        <div class="metric-value metric-positive">$0.00</div>
+    </div>
+    
+    <div class="card">
+        <h3>Monthly Income</h3>
+        <div class="metric-value metric-neutral">$0.00</div>
+    </div>
+    
+    <div class="card">
+        <h3>Monthly Expenses</h3>
+        <div class="metric-value metric-negative">$0.00</div>
+    </div>
+    
+    <div class="card">
+        <h3>Savings Rate</h3>
+        <div class="metric-value metric-positive">0%</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="section-title">Recent Transactions</h3>
+    <div class="empty-state">
+        No transactions yet. Add your first transaction to get started.
+    </div>
+</div>
+{% endblock %}

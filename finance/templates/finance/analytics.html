@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Analytics{% endblock %}
+
+{% block content %}
+<!-- Header with time period selector -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+    <div style="display: flex; gap: 16px; align-items: center;">
+        <select style="
+            background-color: #111111;
+            border: 1px solid #27272a;
+            color: #e4e4e7;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        ">
+            <option>Last 12 months</option>
+            <option>Last 6 months</option>
+            <option>Last 3 months</option>
+            <option>Year to date</option>
+            <option>Custom range</option>
+        </select>
+        
+        <h2 class="section-title" style="margin-bottom: 0;">Financial Analytics</h2>
+    </div>
+    
+    <button style="
+        background-color: #22c55e;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    " onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'">
+        Export Report
+    </button>
+</div>
+
+<!-- Key Metrics Overview -->
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 32px;">
+    <div class="card">
+        <h3>Average Monthly Income</h3>
+        <div class="metric-value metric-positive">£3,185.50</div>
+        <p style="color: #22c55e; font-size: 12px; margin-top: 4px;">↗ +5.2% vs last period</p>
+    </div>
+    
+    <div class="card">
+        <h3>Average Monthly Expenses</h3>
+        <div class="metric-value metric-negative">£2,640.20</div>
+        <p style="color: #ef4444; font-size: 12px; margin-top: 4px;">↗ +8.1% vs last period</p>
+    </div>
+    
+    <div class="card">
+        <h3>Net Savings Rate</h3>
+        <div class="metric-value metric-neutral">17.1%</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">↘ -2.9% vs last period</p>
+    </div>
+    
+    <div class="card">
+        <h3>Financial Health Score</h3>
+        <div class="metric-value metric-positive">8.2/10</div>
+        <p style="color: #22c55e; font-size: 12px; margin-top: 4px;">Excellent</p>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px;">
+    <!-- Income vs Expenses Trend -->
+    <div class="card">
+        <h3 class="section-title">Income vs Expenses Trend</h3>
+        <div style="height: 300px; background-color: #0a0a0a; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center;">
+            <!-- Mock Chart -->
+            <div style="width: 100%; height: 100%; position: relative; padding: 20px;">
+                <!-- Y-axis labels -->
+                <div style="position: absolute; left: 10px; top: 20px; color: #71717a; font-size: 11px;">£4k</div>
+                <div style="position: absolute; left: 10px; top: 80px; color: #71717a; font-size: 11px;">£3k</div>
+                <div style="position: absolute; left: 10px; top: 140px; color: #71717a; font-size: 11px;">£2k</div>
+                <div style="position: absolute; left: 10px; top: 200px; color: #71717a; font-size: 11px;">£1k</div>
+                <div style="position: absolute; left: 10px; top: 260px; color: #71717a; font-size: 11px;">£0</div>
+                
+                <!-- Mock line chart -->
+                <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+                    <!-- Income line (green) -->
+                    <polyline points="50,100 120,80 190,90 260,75 330,70 400,65" 
+                              fill="none" stroke="#22c55e" stroke-width="3"/>
+                    <!-- Expenses line (red) -->
+                    <polyline points="50,150 120,160 190,140 260,155 330,145 400,150" 
+                              fill="none" stroke="#ef4444" stroke-width="3"/>
+                </svg>
+                
+                <!-- X-axis labels -->
+                <div style="position: absolute; bottom: 5px; left: 50px; color: #71717a; font-size: 11px;">Jul</div>
+                <div style="position: absolute; bottom: 5px; left: 120px; color: #71717a; font-size: 11px;">Aug</div>
+                <div style="position: absolute; bottom: 5px; left: 190px; color: #71717a; font-size: 11px;">Sep</div>
+                <div style="position: absolute; bottom: 5px; left: 260px; color: #71717a; font-size: 11px;">Oct</div>
+                <div style="position: absolute; bottom: 5px; left: 330px; color: #71717a; font-size: 11px;">Nov</div>
+                <div style="position: absolute; bottom: 5px; left: 400px; color: #71717a; font-size: 11px;">Dec</div>
+                
+                <!-- Legend -->
+                <div style="position: absolute; top: 20px; right: 20px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <div style="width: 12px; height: 3px; background-color: #22c55e;"></div>
+                        <span style="color: #a1a1aa; font-size: 12px;">Income</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 12px; height: 3px; background-color: #ef4444;"></div>
+                        <span style="color: #a1a1aa; font-size: 12px;">Expenses</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Spending by Category -->
+    <div class="card">
+        <h3 class="section-title">Spending by Category</h3>
+        <div style="height: 300px; display: flex; align-items: center; justify-content: center; position: relative;">
+            <!-- Mock Pie Chart -->
+            <svg width="200" height="200" viewBox="0 0 200 200">
+                <!-- Food & Dining - 35% -->
+                <path d="M 100 100 L 100 50 A 50 50 0 0 1 135.36 67.68 Z" fill="#ef4444" />
+                <!-- Transportation - 20% -->
+                <path d="M 100 100 L 135.36 67.68 A 50 50 0 0 1 150 100 Z" fill="#3b82f6" />
+                <!-- Shopping - 25% -->
+                <path d="M 100 100 L 150 100 A 50 50 0 0 1 125 143.3 Z" fill="#f59e0b" />
+                <!-- Bills - 15% -->
+                <path d="M 100 100 L 125 143.3 A 50 50 0 0 1 85 128.66 Z" fill="#8b5cf6" />
+                <!-- Entertainment - 5% -->
+                <path d="M 100 100 L 85 128.66 A 50 50 0 0 1 100 50 Z" fill="#22c55e" />
+            </svg>
+            
+            <!-- Legend -->
+            <div style="position: absolute; right: -120px; top: 50%; transform: translateY(-50%);">
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <div style="width: 12px; height: 12px; background-color: #ef4444; border-radius: 2px;"></div>
+                        <span style="color: #fafafa; font-size: 12px;">Food</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">35% - £420</p>
+                </div>
+                
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <div style="width: 12px; height: 12px; background-color: #f59e0b; border-radius: 2px;"></div>
+                        <span style="color: #fafafa; font-size: 12px;">Shopping</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">25% - £300</p>
+                </div>
+                
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <div style="width: 12px; height: 12px; background-color: #3b82f6; border-radius: 2px;"></div>
+                        <span style="color: #fafafa; font-size: 12px;">Transport</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">20% - £240</p>
+                </div>
+                
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <div style="width: 12px; height: 12px; background-color: #8b5cf6; border-radius: 2px;"></div>
+                        <span style="color: #fafafa; font-size: 12px;">Bills</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">15% - £180</p>
+                </div>
+                
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <div style="width: 12px; height: 12px; background-color: #22c55e; border-radius: 2px;"></div>
+                        <span style="color: #fafafa; font-size: 12px;">Entertainment</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">5% - £60</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Insights & Recommendations -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
+    <!-- Financial Insights -->
+    <div class="card">
+        <h3 class="section-title">AI Insights</h3>
+        
+        <div style="margin-bottom: 20px; padding: 16px; background-color: #0f0f0f; border-left: 4px solid #22c55e; border-radius: 6px;">
+            <h4 style="color: #22c55e; font-size: 14px; margin-bottom: 8px;">💡 Positive Trend</h4>
+            <p style="color: #e4e4e7; font-size: 13px; line-height: 1.5;">Your savings rate has improved by 12% over the last quarter. You're consistently saving more than your target.</p>
+        </div>
+        
+        <div style="margin-bottom: 20px; padding: 16px; background-color: #0f0f0f; border-left: 4px solid #f59e0b; border-radius: 6px;">
+            <h4 style="color: #f59e0b; font-size: 14px; margin-bottom: 8px;">⚠️ Watch Out</h4>
+            <p style="color: #e4e4e7; font-size: 13px; line-height: 1.5;">Your shopping expenses increased by 40% this month. Consider reviewing discretionary purchases.</p>
+        </div>
+        
+        <div style="padding: 16px; background-color: #0f0f0f; border-left: 4px solid #3b82f6; border-radius: 6px;">
+            <h4 style="color: #3b82f6; font-size: 14px; margin-bottom: 8px;">📊 Pattern Detected</h4>
+            <p style="color: #e4e4e7; font-size: 13px; line-height: 1.5;">You spend 23% more on weekends compared to weekdays. Plan your weekend activities in advance.</p>
+        </div>
+    </div>
+    
+    <!-- Recommendations -->
+    <div class="card">
+        <h3 class="section-title">Smart Recommendations</h3>
+        
+        <div style="margin-bottom: 20px; padding: 16px; background-color: #0f0f0f; border: 1px solid #27272a; border-radius: 8px;">
+            <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 8px;">🎯 Optimize Savings</h4>
+            <p style="color: #a1a1aa; font-size: 13px; margin-bottom: 8px;">Based on your spending patterns, you could save an additional £180/month by:</p>
+            <ul style="color: #71717a; font-size: 12px; margin-left: 16px;">
+                <li>Reducing dining out by 2 times per week</li>
+                <li>Using public transport instead of ride-sharing</li>
+            </ul>
+        </div>
+        
+        <div style="margin-bottom: 20px; padding: 16px; background-color: #0f0f0f; border: 1px solid #27272a; border-radius: 8px;">
+            <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 8px;">💳 Better Credit Utilization</h4>
+            <p style="color: #a1a1aa; font-size: 13px; margin-bottom: 8px;">Your credit utilization is optimal at 25.7%. To improve your credit score:</p>
+            <ul style="color: #71717a; font-size: 12px; margin-left: 16px;">
+                <li>Keep utilization below 30%</li>
+                <li>Consider paying balances twice per month</li>
+            </ul>
+        </div>
+        
+        <div style="padding: 16px; background-color: #0f0f0f; border: 1px solid #27272a; border-radius: 8px;">
+            <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 8px;">📈 Investment Opportunity</h4>
+            <p style="color: #a1a1aa; font-size: 13px; margin-bottom: 8px;">You have £800+ monthly surplus. Consider:</p>
+            <ul style="color: #71717a; font-size: 12px; margin-left: 16px;">
+                <li>ISA contributions for tax efficiency</li>
+                <li>Diversified index fund investments</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Account Performance -->
+<div class="card">
+    <h3 class="section-title">Account Performance</h3>
+    
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 1px solid #27272a;">
+                    <th style="text-align: left; padding: 12px 0; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">Account</th>
+                    <th style="text-align: right; padding: 12px 0; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">Balance Change</th>
+                    <th style="text-align: right; padding: 12px 0; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">Transactions</th>
+                    <th style="text-align: right; padding: 12px 0; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">Avg. Transaction</th>
+                    <th style="text-align: right; padding: 12px 0; color: #a1a1aa; font-size: 12px; text-transform: uppercase;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #27272a;">
+                    <td style="padding: 16px 0; color: #fafafa;">Chase Business Current</td>
+                    <td style="padding: 16px 0; text-align: right; color: #22c55e; font-weight: 600;">+£1,250.80</td>
+                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">47</td>
+                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">£142.30</td>
+                    <td style="padding: 16px 0; text-align: right;">
+                        <span style="background-color: #22c55e20; color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Active</span>
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid #27272a;">
+                    <td style="padding: 16px 0; color: #fafafa;">Marcus High Yield Savings</td>
+                    <td style="padding: 16px 0; text-align: right; color: #22c55e; font-weight: 600;">+£590.25</td>
+                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">8</td>
+                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">£73.78</td>
+                    <td style="padding: 16px 0; text-align: right;">
+                        <span style="background-color: #22c55e20; color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Active</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 16px 0; color: #fafafa;">Barclaycard Platinum</td>
+                    <td style="padding: 16px 0; text-align: right; color: #ef4444; font-weight: 600;">-£284.50</td>
+                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">23</td>
+                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">£55.87</td>
+                    <td style="padding: 16px 0; text-align: right;">
+                        <span style="background-color: #ef444420; color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Credit</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div style="margin-bottom: 32px;">
+    <h2 class="section-title" style="margin-bottom: 8px;">Account Settings</h2>
+    <p style="color: #71717a; font-size: 14px;">Manage your profile, preferences, and security settings.</p>
+</div>
+
+<!-- Settings Navigation -->
+<div style="display: grid; grid-template-columns: 240px 1fr; gap: 32px;">
+    <!-- Settings Sidebar -->
+    <div class="card" style="height: fit-content;">
+        <nav>
+            <ul style="list-style: none;">
+                <li style="margin-bottom: 4px;">
+                    <a href="#profile" style="
+                        display: block;
+                        padding: 12px 16px;
+                        color: #fafafa;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        background-color: #27272a;
+                        font-size: 14px;
+                        font-weight: 500;
+                    ">Profile</a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                    <a href="#security" style="
+                        display: block;
+                        padding: 12px 16px;
+                        color: #a1a1aa;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s ease;
+                    " onmouseover="this.style.backgroundColor='#18181b'; this.style.color='#fafafa'" 
+                       onmouseout="this.style.backgroundColor='transparent'; this.style.color='#a1a1aa'">Security</a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                    <a href="#notifications" style="
+                        display: block;
+                        padding: 12px 16px;
+                        color: #a1a1aa;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s ease;
+                    " onmouseover="this.style.backgroundColor='#18181b'; this.style.color='#fafafa'" 
+                       onmouseout="this.style.backgroundColor='transparent'; this.style.color='#a1a1aa'">Notifications</a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                    <a href="#banking" style="
+                        display: block;
+                        padding: 12px 16px;
+                        color: #a1a1aa;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s ease;
+                    " onmouseover="this.style.backgroundColor='#18181b'; this.style.color='#fafafa'" 
+                       onmouseout="this.style.backgroundColor='transparent'; this.style.color='#a1a1aa'">Banking</a>
+                </li>
+                <li style="margin-bottom: 4px;">
+                    <a href="#privacy" style="
+                        display: block;
+                        padding: 12px 16px;
+                        color: #a1a1aa;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s ease;
+                    " onmouseover="this.style.backgroundColor='#18181b'; this.style.color='#fafafa'" 
+                       onmouseout="this.style.backgroundColor='transparent'; this.style.color='#a1a1aa'">Privacy</a>
+                </li>
+                <li>
+                    <a href="#support" style="
+                        display: block;
+                        padding: 12px 16px;
+                        color: #a1a1aa;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s ease;
+                    " onmouseover="this.style.backgroundColor='#18181b'; this.style.color='#fafafa'" 
+                       onmouseout="this.style.backgroundColor='transparent'; this.style.color='#a1a1aa'">Support</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!-- Settings Content -->
+    <div>
+        <!-- Profile Settings -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h3 class="section-title" style="margin-bottom: 0;">Profile Information</h3>
+                <button style="
+                    background-color: #22c55e;
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: background-color 0.2s ease;
+                " onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'">
+                    Save Changes
+                </button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <label style="display: block; color: #a1a1aa; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Full Name</label>
+                    <input type="text" value="John Smith" style="
+                        width: 100%;
+                        background-color: #0a0a0a;
+                        border: 1px solid #27272a;
+                        color: #e4e4e7;
+                        padding: 12px 16px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                    " />
+                </div>
+                
+                <div>
+                    <label style="display: block; color: #a1a1aa; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Email Address</label>
+                    <input type="email" value="john.smith@email.com" style="
+                        width: 100%;
+                        background-color: #0a0a0a;
+                        border: 1px solid #27272a;
+                        color: #e4e4e7;
+                        padding: 12px 16px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                    " />
+                </div>
+                
+                <div>
+                    <label style="display: block; color: #a1a1aa; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Phone Number</label>
+                    <input type="tel" value="+44 7700 123456" style="
+                        width: 100%;
+                        background-color: #0a0a0a;
+                        border: 1px solid #27272a;
+                        color: #e4e4e7;
+                        padding: 12px 16px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                    " />
+                </div>
+                
+                <div>
+                    <label style="display: block; color: #a1a1aa; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Currency</label>
+                    <select style="
+                        width: 100%;
+                        background-color: #0a0a0a;
+                        border: 1px solid #27272a;
+                        color: #e4e4e7;
+                        padding: 12px 16px;
+                        border-radius: 8px;
+                        font-size: 14px;
+                    ">
+                        <option>GBP (£) - British Pound</option>
+                        <option>EUR (€) - Euro</option>
+                        <option>USD ($) - US Dollar</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Security Settings -->
+        <div class="card" style="margin-bottom: 24px;">
+            <h3 class="section-title">Security & Authentication</h3>
+            
+            <div style="border-bottom: 1px solid #27272a; padding-bottom: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Two-Factor Authentication</h4>
+                        <p style="color: #71717a; font-size: 12px;">Add an extra layer of security to your account</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="
+                            background-color: #22c55e20;
+                            color: #22c55e;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            font-size: 11px;
+                            text-transform: uppercase;
+                        ">Enabled</span>
+                        <button style="
+                            background-color: #27272a;
+                            color: #e4e4e7;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 6px;
+                            font-size: 12px;
+                            cursor: pointer;
+                        ">Configure</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="border-bottom: 1px solid #27272a; padding-bottom: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Login Sessions</h4>
+                        <p style="color: #71717a; font-size: 12px;">Manage your active login sessions</p>
+                    </div>
+                    <button style="
+                        background-color: #27272a;
+                        color: #e4e4e7;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                        cursor: pointer;
+                    ">View Sessions</button>
+                </div>
+            </div>
+            
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Change Password</h4>
+                        <p style="color: #71717a; font-size: 12px;">Update your account password</p>
+                    </div>
+                    <button style="
+                        background-color: #27272a;
+                        color: #e4e4e7;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                        cursor: pointer;
+                    ">Change</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notifications -->
+        <div class="card" style="margin-bottom: 24px;">
+            <h3 class="section-title">Notification Preferences</h3>
+            
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Transaction Alerts</h4>
+                        <p style="color: #71717a; font-size: 12px;">Get notified of new transactions</p>
+                    </div>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" checked style="margin-right: 8px;" />
+                        <span style="color: #22c55e; font-size: 12px;">Enabled</span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Budget Warnings</h4>
+                        <p style="color: #71717a; font-size: 12px;">Alert when approaching budget limits</p>
+                    </div>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" checked style="margin-right: 8px;" />
+                        <span style="color: #22c55e; font-size: 12px;">Enabled</span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Monthly Reports</h4>
+                        <p style="color: #71717a; font-size: 12px;">Receive monthly financial summaries</p>
+                    </div>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" style="margin-right: 8px;" />
+                        <span style="color: #71717a; font-size: 12px;">Disabled</span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Marketing Communications</h4>
+                        <p style="color: #71717a; font-size: 12px;">Tips, features, and product updates</p>
+                    </div>
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" style="margin-right: 8px;" />
+                        <span style="color: #71717a; font-size: 12px;">Disabled</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Connected Banking -->
+        <div class="card" style="margin-bottom: 24px;">
+            <h3 class="section-title">Connected Banking</h3>
+            
+            <div style="border-bottom: 1px solid #27272a; padding-bottom: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Open Banking Consent</h4>
+                        <p style="color: #71717a; font-size: 12px;">Manage your banking data permissions</p>
+                        <p style="color: #71717a; font-size: 11px; margin-top: 4px;">Expires: March 15, 2025</p>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button style="
+                            background-color: #ef444420;
+                            color: #ef4444;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 6px;
+                            font-size: 12px;
+                            cursor: pointer;
+                        ">Revoke</button>
+                        <button style="
+                            background-color: #27272a;
+                            color: #e4e4e7;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 6px;
+                            font-size: 12px;
+                            cursor: pointer;
+                        ">Renew</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Data Sync Frequency</h4>
+                        <p style="color: #71717a; font-size: 12px;">How often to update your account data</p>
+                    </div>
+                    <select style="
+                        background-color: #0a0a0a;
+                        border: 1px solid #27272a;
+                        color: #e4e4e7;
+                        padding: 8px 12px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                    ">
+                        <option>Every 4 hours</option>
+                        <option>Every 8 hours</option>
+                        <option>Daily</option>
+                        <option>Manual only</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Danger Zone -->
+        <div class="card" style="border: 1px solid #ef444420;">
+            <h3 style="color: #ef4444; font-size: 18px; font-weight: 600; margin-bottom: 16px;">Danger Zone</h3>
+            
+            <div style="border-bottom: 1px solid #27272a; padding-bottom: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 4px;">Export All Data</h4>
+                        <p style="color: #71717a; font-size: 12px;">Download a complete copy of your financial data</p>
+                    </div>
+                    <button style="
+                        background-color: #27272a;
+                        color: #e4e4e7;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                        cursor: pointer;
+                    ">Export</button>
+                </div>
+            </div>
+            
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #ef4444; font-size: 14px; margin-bottom: 4px;">Delete Account</h4>
+                        <p style="color: #71717a; font-size: 12px;">Permanently delete your account and all data</p>
+                    </div>
+                    <button style="
+                        background-color: #ef444420;
+                        color: #ef4444;
+                        border: 1px solid #ef4444;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                        cursor: pointer;
+                    ">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Transactions{% endblock %}
+
+{% block content %}
+<!-- Header with filters -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+    <div style="display: flex; gap: 16px; align-items: center;">
+        <select style="
+            background-color: #111111;
+            border: 1px solid #27272a;
+            color: #e4e4e7;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        ">
+            <option>All Accounts</option>
+            <option>Chase Business Current</option>
+            <option>Marcus High Yield Savings</option>
+            <option>Barclaycard Platinum</option>
+        </select>
+        
+        <select style="
+            background-color: #111111;
+            border: 1px solid #27272a;
+            color: #e4e4e7;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        ">
+            <option>Last 30 days</option>
+            <option>Last 7 days</option>
+            <option>Last 90 days</option>
+            <option>This month</option>
+            <option>Last month</option>
+        </select>
+        
+        <select style="
+            background-color: #111111;
+            border: 1px solid #27272a;
+            color: #e4e4e7;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        ">
+            <option>All Categories</option>
+            <option>Food & Dining</option>
+            <option>Shopping</option>
+            <option>Transportation</option>
+            <option>Bills & Utilities</option>
+            <option>Entertainment</option>
+        </select>
+    </div>
+    
+    <button style="
+        background-color: #22c55e;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    " onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'">
+        Export CSV
+    </button>
+</div>
+
+<!-- Transaction Summary Cards -->
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 32px;">
+    <div class="card">
+        <h3>Total Inflow</h3>
+        <div class="metric-value metric-positive">£3,250.00</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">12 transactions</p>
+    </div>
+    
+    <div class="card">
+        <h3>Total Outflow</h3>
+        <div class="metric-value metric-negative">£2,840.75</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">28 transactions</p>
+    </div>
+    
+    <div class="card">
+        <h3>Net Change</h3>
+        <div class="metric-value metric-positive">£409.25</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Last 30 days</p>
+    </div>
+    
+    <div class="card">
+        <h3>Average Transaction</h3>
+        <div class="metric-value metric-neutral">£71.02</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Median: £24.50</p>
+    </div>
+</div>
+
+<!-- Transactions List -->
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h3 class="section-title" style="margin-bottom: 0;">Recent Transactions</h3>
+        <p style="color: #71717a; font-size: 12px;">Showing 40 of 156 transactions</p>
+    </div>
+    
+    <!-- Transaction Item -->
+    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="
+                width: 40px;
+                height: 40px;
+                background-color: #22c55e20;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            ">💰</div>
+            <div>
+                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Salary Payment</h4>
+                <p style="color: #71717a; font-size: 12px;">ACME CORP LTD • Chase Business Current</p>
+                <p style="color: #71717a; font-size: 11px;">Transaction ID: FT21334455667788</p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <p style="color: #22c55e; font-size: 16px; font-weight: 600;">+£3,250.00</p>
+            <p style="color: #a1a1aa; font-size: 12px;">Today, 09:15</p>
+            <span style="
+                background-color: #22c55e20;
+                color: #22c55e;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 10px;
+                text-transform: uppercase;
+            ">Credit</span>
+        </div>
+    </div>
+    
+    <!-- Transaction Item -->
+    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="
+                width: 40px;
+                height: 40px;
+                background-color: #ef444420;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            ">🍕</div>
+            <div>
+                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Deliveroo</h4>
+                <p style="color: #71717a; font-size: 12px;">Food & Dining • Barclaycard Platinum</p>
+                <p style="color: #71717a; font-size: 11px;">Transaction ID: CD21334455667789</p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-£24.50</p>
+            <p style="color: #a1a1aa; font-size: 12px;">Yesterday, 19:42</p>
+            <span style="
+                background-color: #ef444420;
+                color: #ef4444;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 10px;
+                text-transform: uppercase;
+            ">Debit</span>
+        </div>
+    </div>
+    
+    <!-- Transaction Item -->
+    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="
+                width: 40px;
+                height: 40px;
+                background-color: #ef444420;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            ">🛒</div>
+            <div>
+                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Tesco Stores</h4>
+                <p style="color: #71717a; font-size: 12px;">Groceries • Chase Business Current</p>
+                <p style="color: #71717a; font-size: 11px;">Transaction ID: DC21334455667790</p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-£67.89</p>
+            <p style="color: #a1a1aa; font-size: 12px;">Yesterday, 14:23</p>
+            <span style="
+                background-color: #ef444420;
+                color: #ef4444;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 10px;
+                text-transform: uppercase;
+            ">Debit</span>
+        </div>
+    </div>
+    
+    <!-- Transaction Item -->
+    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="
+                width: 40px;
+                height: 40px;
+                background-color: #ef444420;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            ">⚡</div>
+            <div>
+                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">British Gas</h4>
+                <p style="color: #71717a; font-size: 12px;">Bills & Utilities • Chase Business Current</p>
+                <p style="color: #71717a; font-size: 11px;">Transaction ID: DD21334455667791</p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-£120.00</p>
+            <p style="color: #a1a1aa; font-size: 12px;">2 days ago, 08:00</p>
+            <span style="
+                background-color: #3b82f620;
+                color: #3b82f6;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 10px;
+                text-transform: uppercase;
+            ">Direct Debit</span>
+        </div>
+    </div>
+    
+    <!-- Transaction Item -->
+    <div style="border-bottom: 1px solid #27272a; padding: 16px 0; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="
+                width: 40px;
+                height: 40px;
+                background-color: #ef444420;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            ">🚇</div>
+            <div>
+                <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">TFL Travel Charge</h4>
+                <p style="color: #71717a; font-size: 12px;">Transportation • Barclaycard Platinum</p>
+                <p style="color: #71717a; font-size: 11px;">Transaction ID: CD21334455667792</p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <p style="color: #ef4444; font-size: 16px; font-weight: 600;">-£12.40</p>
+            <p style="color: #a1a1aa; font-size: 12px;">3 days ago, 16:35</p>
+            <span style="
+                background-color: #ef444420;
+                color: #ef4444;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 10px;
+                text-transform: uppercase;
+            ">Contactless</span>
+        </div>
+    </div>
+    
+    <!-- Load More Button -->
+    <div style="text-align: center; margin-top: 24px;">
+        <button style="
+            background-color: #27272a;
+            color: #e4e4e7;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'">
+            Load More Transactions
+        </button>
+    </div>
+</div>
+{% endblock %}
