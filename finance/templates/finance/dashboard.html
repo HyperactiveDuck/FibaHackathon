@@ -3,32 +3,462 @@
 {% block page_title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="grid">
+<!-- Welcome Section -->
+<div style="margin-bottom: 32px;">
+    <h2 style="color: #fafafa; font-size: 24px; font-weight: 600; margin-bottom: 8px;">Welcome back, John!</h2>
+    <p style="color: #71717a; font-size: 14px;">Here's your financial overview for today.</p>
+</div>
+
+<!-- Quick Stats Grid -->
+<div class="grid" style="margin-bottom: 32px;">
     <div class="card">
         <h3>Total Balance</h3>
-        <div class="metric-value metric-positive">$0.00</div>
+        <div class="metric-value metric-positive">₺18,201.05</div>
+        <p style="color: #22c55e; font-size: 12px; margin-top: 4px;">↗ +2.3% from last month</p>
     </div>
     
     <div class="card">
-        <h3>Monthly Income</h3>
-        <div class="metric-value metric-neutral">$0.00</div>
+        <h3>Monthly Spending</h3>
+        <div class="metric-value metric-negative">₺2,420.85</div>
+        <p style="color: #a1a1aa; font-size: 12px; margin-top: 4px;">Budget: ₺2,800.00</p>
     </div>
     
     <div class="card">
-        <h3>Monthly Expenses</h3>
-        <div class="metric-value metric-negative">$0.00</div>
+        <h3>Savings This Month</h3>
+        <div class="metric-value metric-neutral">₺829.15</div>
+        <p style="color: #22c55e; font-size: 12px; margin-top: 4px;">Goal: ₺400.00 achieved</p>
     </div>
     
     <div class="card">
-        <h3>Savings Rate</h3>
-        <div class="metric-value metric-positive">0%</div>
+        <h3>Upcoming Bills</h3>
+        <div class="metric-value metric-neutral">₺340.00</div>
+        <p style="color: #f59e0b; font-size: 12px; margin-top: 4px;">3 bills due this week</p>
     </div>
 </div>
 
-<div class="card">
-    <h3 class="section-title">Recent Transactions</h3>
-    <div class="empty-state">
-        No transactions yet. Add your first transaction to get started.
+<!-- Charts and AI Chat Section -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 320px; gap: 24px; margin-bottom: 32px;">
+    <!-- Spending by Category Pie Chart -->
+    <div class="card">
+        <h3 class="section-title">Spending by Category</h3>
+        <div style="height: 280px; display: flex; align-items: center; justify-content: center; position: relative;">
+            <!-- Pie Chart Container -->
+            <canvas id="spendingChart" width="200" height="200"></canvas>
+            
+            <!-- Legend positioned in top-right corner -->
+            <div style="
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                background-color: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(8px);
+                padding: 16px;
+                border-radius: 8px;
+                border: 1px solid #27272a;
+            ">
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #ef4444; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Food & Dining</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">35% • ₺420</p>
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #f59e0b; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Shopping</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">25% • ₺300</p>
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #3b82f6; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Transportation</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">20% • ₺240</p>
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #8b5cf6; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Bills & Utilities</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">15% • ₺180</p>
+                </div>
+                
+                <div>
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #22c55e; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Entertainment</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">5% • ₺60</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Account Distribution Pie Chart -->
+    <div class="card">
+        <h3 class="section-title">Account Distribution</h3>
+        <div style="height: 280px; display: flex; align-items: center; justify-content: center; position: relative;">
+            <!-- Pie Chart Container -->
+            <canvas id="accountChart" width="200" height="200"></canvas>
+            
+            <!-- Legend positioned in top-right corner -->
+            <div style="
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                background-color: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(8px);
+                padding: 16px;
+                border-radius: 8px;
+                border: 1px solid #27272a;
+            ">
+                <div style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #22c55e; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Savings</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">86.6% • ₺15,750</p>
+                </div>
+                
+                <div>
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #3b82f6; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Current Account</span>
+                    </div>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">13.5% • ₺2,451</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI Chat Assistant -->
+    <div class="card" style="display: flex; flex-direction: column; height: 380px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #27272a;">
+            <div style="
+                width: 32px;
+                height: 32px;
+                background: linear-gradient(135deg, #22c55e, #3b82f6);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+            ">🤖</div>
+            <h3 style="color: #fafafa; font-size: 16px; font-weight: 600; margin: 0;">AI Assistant</h3>
+        </div>
+        
+        <!-- Chat Messages -->
+        <div style="flex: 1; overflow-y: auto; margin-bottom: 16px;">
+            <!-- AI Message -->
+            <div style="margin-bottom: 16px;">
+                <div style="
+                    background-color: #27272a;
+                    padding: 12px;
+                    border-radius: 12px 12px 12px 4px;
+                    margin-bottom: 4px;
+                ">
+                    <p style="color: #e4e4e7; font-size: 13px; line-height: 1.4;">
+                        Hi John! I noticed you're 15% over budget on shopping this month. Would you like some tips to optimize your spending?
+                    </p>
+                </div>
+                <p style="color: #71717a; font-size: 10px;">Just now</p>
+            </div>
+            
+            <!-- User Message -->
+            <div style="margin-bottom: 16px; text-align: right;">
+                <div style="
+                    background-color: #22c55e;
+                    color: white;
+                    padding: 12px;
+                    border-radius: 12px 12px 4px 12px;
+                    margin-bottom: 4px;
+                    display: inline-block;
+                    max-width: 80%;
+                ">
+                    <p style="font-size: 13px; line-height: 1.4;">
+                        Yes, please show me where I can save money.
+                    </p>
+                </div>
+                <p style="color: #71717a; font-size: 10px;">2 mins ago</p>
+            </div>
+            
+            <!-- AI Message -->
+            <div style="margin-bottom: 16px;">
+                <div style="
+                    background-color: #27272a;
+                    padding: 12px;
+                    border-radius: 12px 12px 12px 4px;
+                    margin-bottom: 4px;
+                ">
+                    <p style="color: #e4e4e7; font-size: 13px; line-height: 1.4;">
+                        Based on your patterns, you spend ₺120/week on takeaway. Cooking 3 meals at home could save you ₺50/week. Also, you have 3 unused subscriptions totaling ₺25/month.
+                    </p>
+                </div>
+                <p style="color: #71717a; font-size: 10px;">1 min ago</p>
+            </div>
+        </div>
+        
+        <!-- Chat Input -->
+        <div style="display: flex; gap: 8px;">
+            <input 
+                type="text" 
+                placeholder="Ask about your finances..."
+                style="
+                    flex: 1;
+                    background-color: #0a0a0a;
+                    border: 1px solid #27272a;
+                    color: #e4e4e7;
+                    padding: 10px 12px;
+                    border-radius: 8px;
+                    font-size: 12px;
+                    outline: none;
+                "
+                onkeypress="if(event.key==='Enter') sendMessage(this)"
+            />
+            <button 
+                onclick="sendMessage(this.previousElementSibling)"
+                style="
+                    background-color: #22c55e;
+                    color: white;
+                    border: none;
+                    padding: 10px 12px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 12px;
+                ">
+                Send
+            </button>
+        </div>
     </div>
 </div>
+
+<!-- Recent Activity -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+    <!-- Recent Transactions -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 class="section-title" style="margin-bottom: 0;">Recent Transactions</h3>
+            <a href="{% url 'transactions' %}" style="color: #22c55e; text-decoration: none; font-size: 12px;">View All</a>
+        </div>
+        
+        <div style="space-y: 12px;">
+            <!-- Transaction 1 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #27272a;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 32px; height: 32px; background-color: #ef444420; border-radius: 6px; display: flex; align-items: center; justify-content: center;">🍕</div>
+                    <div>
+                        <p style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Yemeksepeti</p>
+                        <p style="color: #71717a; font-size: 11px;">Today, 7:42 PM</p>
+                    </div>
+                </div>
+                <p style="color: #ef4444; font-size: 14px; font-weight: 600;">-₺24.50</p>
+            </div>
+            
+            <!-- Transaction 2 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #27272a;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 32px; height: 32px; background-color: #22c55e20; border-radius: 6px; display: flex; align-items: center; justify-content: center;">💰</div>
+                    <div>
+                        <p style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Salary Payment</p>
+                        <p style="color: #71717a; font-size: 11px;">Yesterday, 9:15 AM</p>
+                    </div>
+                </div>
+                <p style="color: #22c55e; font-size: 14px; font-weight: 600;">+₺3,250.00</p>
+            </div>
+            
+            <!-- Transaction 3 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 32px; height: 32px; background-color: #ef444420; border-radius: 6px; display: flex; align-items: center; justify-content: center;">🛒</div>
+                    <div>
+                        <p style="color: #fafafa; font-size: 14px; margin-bottom: 2px;">Migros</p>
+                        <p style="color: #71717a; font-size: 11px;">2 days ago, 2:23 PM</p>
+                    </div>
+                </div>
+                <p style="color: #ef4444; font-size: 14px; font-weight: 600;">-₺67.89</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="card">
+        <h3 class="section-title">Quick Actions</h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button style="
+                background-color: #27272a;
+                color: #e4e4e7;
+                border: none;
+                padding: 12px 16px;
+                border-radius: 8px;
+                text-align: left;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                font-size: 14px;
+            " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'">
+                💳 Connect New Account
+            </button>
+            
+            <button style="
+                background-color: #27272a;
+                color: #e4e4e7;
+                border: none;
+                padding: 12px 16px;
+                border-radius: 8px;
+                text-align: left;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                font-size: 14px;
+            " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'">
+                🎯 Set New Budget Goal
+            </button>
+            
+            <button style="
+                background-color: #27272a;
+                color: #e4e4e7;
+                border: none;
+                padding: 12px 16px;
+                border-radius: 8px;
+                text-align: left;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                font-size: 14px;
+            " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'">
+                📊 Generate Report
+            </button>
+            
+            <button style="
+                background-color: #27272a;
+                color: #e4e4e7;
+                border: none;
+                padding: 12px 16px;
+                border-radius: 8px;
+                text-align: left;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                font-size: 14px;
+            " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'">
+                ⚙️ Manage Settings
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Hardcoded data - will be pulled from DB later
+const spendingData = [
+    { label: 'Food & Dining', value: 420, percentage: 35, color: '#ef4444' },
+    { label: 'Shopping', value: 300, percentage: 25, color: '#f59e0b' },
+    { label: 'Transportation', value: 240, percentage: 20, color: '#3b82f6' },
+    { label: 'Bills & Utilities', value: 180, percentage: 15, color: '#8b5cf6' },
+    { label: 'Entertainment', value: 60, percentage: 5, color: '#22c55e' }
+];
+
+const accountData = [
+    { label: 'Savings', value: 15750, percentage: 86.6, color: '#22c55e' },
+    { label: 'Current Account', value: 2451, percentage: 13.5, color: '#3b82f6' }
+];
+
+function drawPieChart(canvasId, data) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 90; // Increased back to 90 since we have more space now
+    
+    let currentAngle = -Math.PI / 2; // Start from top
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    data.forEach(item => {
+        const sliceAngle = (item.percentage / 100) * 2 * Math.PI;
+        
+        // Draw slice
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+        ctx.closePath();
+        ctx.fillStyle = item.color;
+        ctx.fill();
+        
+        // Add border
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        currentAngle += sliceAngle;
+    });
+}
+
+function sendMessage(input) {
+    const message = input.value.trim();
+    if (!message) return;
+    
+    // Add user message to chat
+    const chatContainer = input.closest('.card').querySelector('div[style*="flex: 1"]');
+    const userMessage = `
+        <div style="margin-bottom: 16px; text-align: right;">
+            <div style="
+                background-color: #22c55e;
+                color: white;
+                padding: 12px;
+                border-radius: 12px 12px 4px 12px;
+                margin-bottom: 4px;
+                display: inline-block;
+                max-width: 80%;
+            ">
+                <p style="font-size: 13px; line-height: 1.4;">${message}</p>
+            </div>
+            <p style="color: #71717a; font-size: 10px;">Just now</p>
+        </div>
+    `;
+    
+    chatContainer.innerHTML += userMessage;
+    input.value = '';
+    
+    // Scroll to bottom
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    
+    // Simulate AI response after 1 second
+    setTimeout(() => {
+        const responses = [
+            "I can help you analyze that expense pattern. Let me check your recent data...",
+            "Based on your spending history, here are some personalized recommendations.",
+            "That's a great question! Let me provide some insights from your financial data.",
+            "I've found some opportunities to optimize your budget. Would you like to see them?"
+        ];
+        
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        
+        const aiMessage = `
+            <div style="margin-bottom: 16px;">
+                <div style="
+                    background-color: #27272a;
+                    padding: 12px;
+                    border-radius: 12px 12px 12px 4px;
+                    margin-bottom: 4px;
+                ">
+                    <p style="color: #e4e4e7; font-size: 13px; line-height: 1.4;">${randomResponse}</p>
+                </div>
+                <p style="color: #71717a; font-size: 10px;">Just now</p>
+            </div>
+        `;
+        
+        chatContainer.innerHTML += aiMessage;
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 1000);
+}
+
+// Draw charts when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    drawPieChart('spendingChart', spendingData);
+    drawPieChart('accountChart', accountData);
+});
+</script>
 {% endblock %}

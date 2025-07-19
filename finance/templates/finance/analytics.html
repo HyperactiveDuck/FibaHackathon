@@ -42,13 +42,13 @@
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 32px;">
     <div class="card">
         <h3>Average Monthly Income</h3>
-        <div class="metric-value metric-positive">£3,185.50</div>
+        <div class="metric-value metric-positive">₺3,185.50</div>
         <p style="color: #22c55e; font-size: 12px; margin-top: 4px;">↗ +5.2% vs last period</p>
     </div>
     
     <div class="card">
         <h3>Average Monthly Expenses</h3>
-        <div class="metric-value metric-negative">£2,640.20</div>
+        <div class="metric-value metric-negative">₺2,640.20</div>
         <p style="color: #ef4444; font-size: 12px; margin-top: 4px;">↗ +8.1% vs last period</p>
     </div>
     
@@ -70,44 +70,28 @@
     <!-- Income vs Expenses Trend -->
     <div class="card">
         <h3 class="section-title">Income vs Expenses Trend</h3>
-        <div style="height: 300px; background-color: #0a0a0a; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center;">
-            <!-- Mock Chart -->
-            <div style="width: 100%; height: 100%; position: relative; padding: 20px;">
-                <!-- Y-axis labels -->
-                <div style="position: absolute; left: 10px; top: 20px; color: #71717a; font-size: 11px;">£4k</div>
-                <div style="position: absolute; left: 10px; top: 80px; color: #71717a; font-size: 11px;">£3k</div>
-                <div style="position: absolute; left: 10px; top: 140px; color: #71717a; font-size: 11px;">£2k</div>
-                <div style="position: absolute; left: 10px; top: 200px; color: #71717a; font-size: 11px;">£1k</div>
-                <div style="position: absolute; left: 10px; top: 260px; color: #71717a; font-size: 11px;">£0</div>
-                
-                <!-- Mock line chart -->
-                <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
-                    <!-- Income line (green) -->
-                    <polyline points="50,100 120,80 190,90 260,75 330,70 400,65" 
-                              fill="none" stroke="#22c55e" stroke-width="3"/>
-                    <!-- Expenses line (red) -->
-                    <polyline points="50,150 120,160 190,140 260,155 330,145 400,150" 
-                              fill="none" stroke="#ef4444" stroke-width="3"/>
-                </svg>
-                
-                <!-- X-axis labels -->
-                <div style="position: absolute; bottom: 5px; left: 50px; color: #71717a; font-size: 11px;">Jul</div>
-                <div style="position: absolute; bottom: 5px; left: 120px; color: #71717a; font-size: 11px;">Aug</div>
-                <div style="position: absolute; bottom: 5px; left: 190px; color: #71717a; font-size: 11px;">Sep</div>
-                <div style="position: absolute; bottom: 5px; left: 260px; color: #71717a; font-size: 11px;">Oct</div>
-                <div style="position: absolute; bottom: 5px; left: 330px; color: #71717a; font-size: 11px;">Nov</div>
-                <div style="position: absolute; bottom: 5px; left: 400px; color: #71717a; font-size: 11px;">Dec</div>
-                
-                <!-- Legend -->
-                <div style="position: absolute; top: 20px; right: 20px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <div style="width: 12px; height: 3px; background-color: #22c55e;"></div>
-                        <span style="color: #a1a1aa; font-size: 12px;">Income</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <div style="width: 12px; height: 3px; background-color: #ef4444;"></div>
-                        <span style="color: #a1a1aa; font-size: 12px;">Expenses</span>
-                    </div>
+        <div style="height: 300px; position: relative;">
+            <!-- Line Chart Container -->
+            <canvas id="incomeExpensesChart" width="800" height="260" style="width: 100%; height: 260px;"></canvas>
+            
+            <!-- Legend positioned higher in top-right corner -->
+            <div style="
+                position: absolute;
+                top: 4px;
+                right: 16px;
+                background-color: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(8px);
+                padding: 12px 16px;
+                border-radius: 8px;
+                border: 1px solid #27272a;
+            ">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <div style="width: 16px; height: 3px; background-color: #22c55e; border-radius: 1px;"></div>
+                    <span style="color: #fafafa; font-size: 12px; font-weight: 500;">Income</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 16px; height: 3px; background-color: #ef4444; border-radius: 1px;"></div>
+                    <span style="color: #fafafa; font-size: 12px; font-weight: 500;">Expenses</span>
                 </div>
             </div>
         </div>
@@ -117,60 +101,58 @@
     <div class="card">
         <h3 class="section-title">Spending by Category</h3>
         <div style="height: 300px; display: flex; align-items: center; justify-content: center; position: relative;">
-            <!-- Mock Pie Chart -->
-            <svg width="200" height="200" viewBox="0 0 200 200">
-                <!-- Food & Dining - 35% -->
-                <path d="M 100 100 L 100 50 A 50 50 0 0 1 135.36 67.68 Z" fill="#ef4444" />
-                <!-- Transportation - 20% -->
-                <path d="M 100 100 L 135.36 67.68 A 50 50 0 0 1 150 100 Z" fill="#3b82f6" />
-                <!-- Shopping - 25% -->
-                <path d="M 100 100 L 150 100 A 50 50 0 0 1 125 143.3 Z" fill="#f59e0b" />
-                <!-- Bills - 15% -->
-                <path d="M 100 100 L 125 143.3 A 50 50 0 0 1 85 128.66 Z" fill="#8b5cf6" />
-                <!-- Entertainment - 5% -->
-                <path d="M 100 100 L 85 128.66 A 50 50 0 0 1 100 50 Z" fill="#22c55e" />
-            </svg>
+            <!-- Pie Chart Container -->
+            <canvas id="analyticsSpendingChart" width="200" height="200"></canvas>
             
-            <!-- Legend -->
-            <div style="position: absolute; right: -120px; top: 50%; transform: translateY(-50%);">
-                <div style="margin-bottom: 12px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                        <div style="width: 12px; height: 12px; background-color: #ef4444; border-radius: 2px;"></div>
-                        <span style="color: #fafafa; font-size: 12px;">Food</span>
+            <!-- Legend positioned higher in top-right corner -->
+            <div style="
+                position: absolute;
+                top: 4px;
+                right: 16px;
+                background-color: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(8px);
+                padding: 16px;
+                border-radius: 8px;
+                border: 1px solid #27272a;
+            ">
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #ef4444; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Food</span>
                     </div>
-                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">35% - £420</p>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">35% • ₺420</p>
                 </div>
                 
-                <div style="margin-bottom: 12px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                        <div style="width: 12px; height: 12px; background-color: #f59e0b; border-radius: 2px;"></div>
-                        <span style="color: #fafafa; font-size: 12px;">Shopping</span>
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #f59e0b; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Shopping</span>
                     </div>
-                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">25% - £300</p>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">25% • ₺300</p>
                 </div>
                 
-                <div style="margin-bottom: 12px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                        <div style="width: 12px; height: 12px; background-color: #3b82f6; border-radius: 2px;"></div>
-                        <span style="color: #fafafa; font-size: 12px;">Transport</span>
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #3b82f6; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Transport</span>
                     </div>
-                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">20% - £240</p>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">20% • ₺240</p>
                 </div>
                 
-                <div style="margin-bottom: 12px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                        <div style="width: 12px; height: 12px; background-color: #8b5cf6; border-radius: 2px;"></div>
-                        <span style="color: #fafafa; font-size: 12px;">Bills</span>
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #8b5cf6; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Bills</span>
                     </div>
-                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">15% - £180</p>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">15% • ₺180</p>
                 </div>
                 
                 <div>
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                        <div style="width: 12px; height: 12px; background-color: #22c55e; border-radius: 2px;"></div>
-                        <span style="color: #fafafa; font-size: 12px;">Entertainment</span>
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                        <div style="width: 10px; height: 10px; background-color: #22c55e; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span style="color: #fafafa; font-size: 11px; font-weight: 500;">Entertainment</span>
                     </div>
-                    <p style="color: #71717a; font-size: 11px; margin-left: 20px;">5% - £60</p>
+                    <p style="color: #71717a; font-size: 10px; margin-left: 16px;">5% • ₺60</p>
                 </div>
             </div>
         </div>
@@ -205,7 +187,7 @@
         
         <div style="margin-bottom: 20px; padding: 16px; background-color: #0f0f0f; border: 1px solid #27272a; border-radius: 8px;">
             <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 8px;">🎯 Optimize Savings</h4>
-            <p style="color: #a1a1aa; font-size: 13px; margin-bottom: 8px;">Based on your spending patterns, you could save an additional £180/month by:</p>
+            <p style="color: #a1a1aa; font-size: 13px; margin-bottom: 8px;">Based on your spending patterns, you could save an additional ₺180/month by:</p>
             <ul style="color: #71717a; font-size: 12px; margin-left: 16px;">
                 <li>Reducing dining out by 2 times per week</li>
                 <li>Using public transport instead of ride-sharing</li>
@@ -223,7 +205,7 @@
         
         <div style="padding: 16px; background-color: #0f0f0f; border: 1px solid #27272a; border-radius: 8px;">
             <h4 style="color: #fafafa; font-size: 14px; margin-bottom: 8px;">📈 Investment Opportunity</h4>
-            <p style="color: #a1a1aa; font-size: 13px; margin-bottom: 8px;">You have £800+ monthly surplus. Consider:</p>
+            <p style="color: #a1a1aa; font-size: 13px; margin-bottom: 8px;">You have ₺800+ monthly surplus. Consider:</p>
             <ul style="color: #71717a; font-size: 12px; margin-left: 16px;">
                 <li>ISA contributions for tax efficiency</li>
                 <li>Diversified index fund investments</li>
@@ -249,28 +231,28 @@
             </thead>
             <tbody>
                 <tr style="border-bottom: 1px solid #27272a;">
-                    <td style="padding: 16px 0; color: #fafafa;">Chase Business Current</td>
-                    <td style="padding: 16px 0; text-align: right; color: #22c55e; font-weight: 600;">+£1,250.80</td>
+                    <td style="padding: 16px 0; color: #fafafa;">Akbank Business Current</td>
+                    <td style="padding: 16px 0; text-align: right; color: #22c55e; font-weight: 600;">+₺1,250.80</td>
                     <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">47</td>
-                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">£142.30</td>
+                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">₺142.30</td>
                     <td style="padding: 16px 0; text-align: right;">
                         <span style="background-color: #22c55e20; color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Active</span>
                     </td>
                 </tr>
                 <tr style="border-bottom: 1px solid #27272a;">
-                    <td style="padding: 16px 0; color: #fafafa;">Marcus High Yield Savings</td>
-                    <td style="padding: 16px 0; text-align: right; color: #22c55e; font-weight: 600;">+£590.25</td>
+                    <td style="padding: 16px 0; color: #fafafa;">Garanti BBVA Savings</td>
+                    <td style="padding: 16px 0; text-align: right; color: #22c55e; font-weight: 600;">+₺590.25</td>
                     <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">8</td>
-                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">£73.78</td>
+                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">₺73.78</td>
                     <td style="padding: 16px 0; text-align: right;">
                         <span style="background-color: #22c55e20; color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Active</span>
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding: 16px 0; color: #fafafa;">Barclaycard Platinum</td>
-                    <td style="padding: 16px 0; text-align: right; color: #ef4444; font-weight: 600;">-£284.50</td>
+                    <td style="padding: 16px 0; color: #fafafa;">İş Bankası Credit Card</td>
+                    <td style="padding: 16px 0; text-align: right; color: #ef4444; font-weight: 600;">-₺284.50</td>
                     <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">23</td>
-                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">£55.87</td>
+                    <td style="padding: 16px 0; text-align: right; color: #e4e4e7;">₺55.87</td>
                     <td style="padding: 16px 0; text-align: right;">
                         <span style="background-color: #ef444420; color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Credit</span>
                     </td>
@@ -279,4 +261,365 @@
         </table>
     </div>
 </div>
+
+<script>
+// Hardcoded data for line chart - will be pulled from DB later
+const chartData = {
+    labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    income: [3200, 3100, 3350, 3250, 3400, 3180, 3450, 3300, 3520, 3280, 3150, 3380],
+    expenses: [2450, 2680, 2320, 2750, 2580, 2890, 2420, 2650, 2380, 2720, 2560, 2640]
+};
+
+function drawLineChart(canvasId, data) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const padding = 60;
+    const chartWidth = canvas.width - (padding * 2);
+    const chartHeight = canvas.height - (padding * 2);
+    
+    // Create tooltip element
+    let tooltip = document.getElementById('chart-tooltip');
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.id = 'chart-tooltip';
+        tooltip.style.cssText = `
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            border: 1px solid #27272a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: none;
+            min-width: 160px;
+        `;
+        document.body.appendChild(tooltip);
+    }
+    
+    // Find min and max values for scaling
+    const allValues = [...data.income, ...data.expenses];
+    const minValue = Math.min(...allValues) - 200;
+    const maxValue = Math.max(...allValues) + 200;
+    const valueRange = maxValue - minValue;
+    
+    // Helper function to scale values
+    function scaleX(index) {
+        return padding + (index / (data.labels.length - 1)) * chartWidth;
+    }
+    
+    function scaleY(value) {
+        return padding + chartHeight - ((value - minValue) / valueRange) * chartHeight;
+    }
+    
+    // Store data points for hover detection
+    const dataPoints = {
+        income: [],
+        expenses: []
+    };
+    
+    // Function to draw the base chart (without highlighting)
+    function drawBaseChart() {
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw grid lines
+        ctx.strokeStyle = '#27272a';
+        ctx.lineWidth = 1;
+        
+        // Horizontal grid lines
+        for (let i = 0; i <= 5; i++) {
+            const y = padding + (i / 5) * chartHeight;
+            ctx.beginPath();
+            ctx.moveTo(padding, y);
+            ctx.lineTo(padding + chartWidth, y);
+            ctx.stroke();
+        }
+        
+        // Vertical grid lines
+        for (let i = 0; i < data.labels.length; i++) {
+            const x = scaleX(i);
+            ctx.beginPath();
+            ctx.moveTo(x, padding);
+            ctx.lineTo(x, padding + chartHeight);
+            ctx.stroke();
+        }
+        
+        // Draw Y-axis labels
+        ctx.fillStyle = '#71717a';
+        ctx.font = '12px system-ui';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        
+        for (let i = 0; i <= 5; i++) {
+            const value = minValue + (i / 5) * valueRange;
+            const y = padding + chartHeight - (i / 5) * chartHeight;
+            ctx.fillText(`₺${Math.round(value)}`, padding - 10, y);
+        }
+        
+        // Draw X-axis labels
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        
+        for (let i = 0; i < data.labels.length; i++) {
+            const x = scaleX(i);
+            ctx.fillText(data.labels[i], x, padding + chartHeight + 10);
+        }
+        
+        // Draw income line (green)
+        ctx.strokeStyle = '#22c55e';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        ctx.beginPath();
+        for (let i = 0; i < data.income.length; i++) {
+            const x = scaleX(i);
+            const y = scaleY(data.income[i]);
+            
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.stroke();
+        
+        // Draw income data points
+        ctx.fillStyle = '#22c55e';
+        for (let i = 0; i < data.income.length; i++) {
+            const x = scaleX(i);
+            const y = scaleY(data.income[i]);
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        // Draw expenses line (red)
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 3;
+        
+        ctx.beginPath();
+        for (let i = 0; i < data.expenses.length; i++) {
+            const x = scaleX(i);
+            const y = scaleY(data.expenses[i]);
+            
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.stroke();
+        
+        // Draw expenses data points
+        ctx.fillStyle = '#ef4444';
+        for (let i = 0; i < data.expenses.length; i++) {
+            const x = scaleX(i);
+            const y = scaleY(data.expenses[i]);
+            
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+    }
+    
+    // Initial chart draw and data point storage
+    drawBaseChart();
+    
+    // Store data points for hover detection
+    for (let i = 0; i < data.income.length; i++) {
+        const x = scaleX(i);
+        const yIncome = scaleY(data.income[i]);
+        const yExpenses = scaleY(data.expenses[i]);
+        
+        dataPoints.income.push({ x, y: yIncome, value: data.income[i], month: data.labels[i], index: i });
+        dataPoints.expenses.push({ x, y: yExpenses, value: data.expenses[i], month: data.labels[i], index: i });
+    }
+    
+    let currentHighlightedPoint = null;
+    let currentHighlightedType = null;
+    
+    // Throttle mousemove events for better performance
+    let isThrottled = false;
+    
+    // Enhanced hover effect with tooltip
+    canvas.addEventListener('mousemove', function(e) {
+        if (isThrottled) return;
+        isThrottled = true;
+        
+        setTimeout(() => {
+            isThrottled = false;
+        }, 16); // ~60fps
+        
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        
+        // Scale mouse coordinates to canvas coordinates
+        const canvasMouseX = (mouseX / rect.width) * canvas.width;
+        const canvasMouseY = (mouseY / rect.height) * canvas.height;
+        
+        let hoveredPoint = null;
+        let hoveredType = null;
+        const hoverRadius = 15;
+        
+        // Check income points
+        for (const point of dataPoints.income) {
+            const distance = Math.sqrt(
+                Math.pow(canvasMouseX - point.x, 2) + Math.pow(canvasMouseY - point.y, 2)
+            );
+            if (distance <= hoverRadius) {
+                hoveredPoint = point;
+                hoveredType = 'income';
+                break;
+            }
+        }
+        
+        // Check expenses points if no income point is hovered
+        if (!hoveredPoint) {
+            for (const point of dataPoints.expenses) {
+                const distance = Math.sqrt(
+                    Math.pow(canvasMouseX - point.x, 2) + Math.pow(canvasMouseY - point.y, 2)
+                );
+                if (distance <= hoverRadius) {
+                    hoveredPoint = point;
+                    hoveredType = 'expenses';
+                    break;
+                }
+            }
+        }
+        
+        // Only redraw if the hovered point changed
+        if (hoveredPoint !== currentHighlightedPoint || hoveredType !== currentHighlightedType) {
+            currentHighlightedPoint = hoveredPoint;
+            currentHighlightedType = hoveredType;
+            
+            if (hoveredPoint) {
+                canvas.style.cursor = 'pointer';
+                
+                // Calculate savings/deficit
+                const monthIncome = data.income[hoveredPoint.index];
+                const monthExpenses = data.expenses[hoveredPoint.index];
+                const savings = monthIncome - monthExpenses;
+                const savingsRate = ((savings / monthIncome) * 100).toFixed(1);
+                
+                // Show detailed tooltip
+                tooltip.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 8px; color: #fafafa;">
+                        ${hoveredPoint.month} 2024
+                    </div>
+                    <div style="margin-bottom: 4px;">
+                        <span style="color: #22c55e;">● Income:</span> ₺${monthIncome.toLocaleString()}
+                    </div>
+                    <div style="margin-bottom: 4px;">
+                        <span style="color: #ef4444;">● Expenses:</span> ₺${monthExpenses.toLocaleString()}
+                    </div>
+                    <div style="margin-bottom: 4px; padding-top: 4px; border-top: 1px solid #27272a;">
+                        <span style="color: ${savings >= 0 ? '#22c55e' : '#ef4444'};">
+                            ${savings >= 0 ? 'Savings' : 'Deficit'}: ₺${Math.abs(savings).toLocaleString()}
+                        </span>
+                    </div>
+                    <div style="color: #a1a1aa; font-size: 11px;">
+                        Savings Rate: ${savingsRate}%
+                    </div>
+                `;
+                
+                // Position tooltip
+                const tooltipX = e.clientX + 10;
+                const tooltipY = e.clientY - 10;
+                
+                tooltip.style.left = tooltipX + 'px';
+                tooltip.style.top = tooltipY + 'px';
+                tooltip.style.display = 'block';
+                
+                // Redraw base chart and highlight point
+                drawBaseChart();
+                
+                // Highlight the hovered point
+                ctx.save();
+                ctx.shadowColor = hoveredType === 'income' ? '#22c55e' : '#ef4444';
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = hoveredType === 'income' ? '#22c55e' : '#ef4444';
+                ctx.beginPath();
+                ctx.arc(hoveredPoint.x, hoveredPoint.y, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Add white border to highlighted point
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.restore();
+                
+            } else {
+                canvas.style.cursor = 'default';
+                tooltip.style.display = 'none';
+                
+                // Redraw base chart without highlighting
+                drawBaseChart();
+            }
+        }
+    });
+    
+    // Hide tooltip when mouse leaves canvas
+    canvas.addEventListener('mouseleave', function() {
+        tooltip.style.display = 'none';
+        canvas.style.cursor = 'default';
+        currentHighlightedPoint = null;
+        currentHighlightedType = null;
+        drawBaseChart(); // Remove highlighting
+    });
+}
+
+// Update the existing analytics pie chart data and function calls
+const analyticsSpendingData = [
+    { label: 'Food & Dining', value: 420, percentage: 35, color: '#ef4444' },
+    { label: 'Shopping', value: 300, percentage: 25, color: '#f59e0b' },
+    { label: 'Transportation', value: 240, percentage: 20, color: '#3b82f6' },
+    { label: 'Bills & Utilities', value: 180, percentage: 15, color: '#8b5cf6' },
+    { label: 'Entertainment', value: 60, percentage: 5, color: '#22c55e' }
+];
+
+function drawPieChart(canvasId, data) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 90;
+    
+    let currentAngle = -Math.PI / 2; // Start from top
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    data.forEach(item => {
+        const sliceAngle = (item.percentage / 100) * 2 * Math.PI;
+        
+        // Draw slice
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+        ctx.closePath();
+        ctx.fillStyle = item.color;
+        ctx.fill();
+        
+        // Add border
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        currentAngle += sliceAngle;
+    });
+}
+
+// Draw charts when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    drawPieChart('analyticsSpendingChart', analyticsSpendingData);
+    drawLineChart('incomeExpensesChart', chartData);
+});
+</script>
 {% endblock %}
