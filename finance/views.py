@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 import json
 from django.http import HttpResponse
 import csv
+import random
+from decimal import Decimal
 
 def dashboard(request):
     # For demo purposes, get the first user if not authenticated
@@ -757,39 +759,43 @@ def export_analytics_report(request, transactions, period):
 
 def add_account(request):
     if request.method == 'POST':
-        # Get demo user if not authenticated
+        # Get user
         if request.user.is_authenticated:
             user = request.user
         else:
             user = User.objects.filter(username='ahmet_yilmaz').first()
         
         if not user:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': 'User not found'})
             return redirect('accounts')
         
         # Extract form data
         bank_name = request.POST.get('bank_name')
         account_type = request.POST.get('account_type')
         account_number = request.POST.get('account_number')
-        iban = request.POST.get('iban')
-        balance = request.POST.get('balance')
         
         try:
-            # Create new account
-            Account.objects.create(
+            # Create new account with actual form data
+            account = Account.objects.create(
                 user=user,
                 bank_name=bank_name,
                 account_type=account_type,
-                iban=iban or f"TR{account_number}",  # Generate IBAN if not provided
-                balance=balance or 0.00
+                account_number=account_number,
+                balance=Decimal('0.00')  # Start with zero balance
             )
-            # Redirect back to accounts page
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True, 'message': 'Account added successfully'})
+            
             return redirect('accounts')
+            
         except Exception as e:
-            # Handle errors (duplicate IBAN, etc.)
             print(f"Error creating account: {e}")
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': str(e)})
             return redirect('accounts')
     
-    # If GET request, redirect to accounts page
     return redirect('accounts')
 
 def delete_account(request):

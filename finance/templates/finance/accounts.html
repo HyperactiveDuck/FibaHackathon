@@ -10,7 +10,7 @@
         <p style="color: #71717a; font-size: 14px;">Manage your connected bank accounts</p>
     </div>
     
-    <button style="
+    <button id="connectAccountBtn" style="
         background-color: #22c55e;
         color: white;
         border: none;
@@ -191,4 +191,576 @@
     </button>
 </div>
 {% endfor %}
+<!-- Connect Account Modal -->
+<div id="connectModal" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+">
+    <div style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #18181b;
+        border: 1px solid #27272a;
+        border-radius: 12px;
+        width: 480px;
+        max-width: 90vw;
+        max-height: 90vh;
+        overflow-y: auto;
+    ">
+        <!-- Modal Header -->
+        <div style="padding: 24px 24px 0 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h3 style="color: #fafafa; font-size: 20px; font-weight: 600;">Connect Your Bank Account</h3>
+                <button id="closeModal" style="
+                    background: none;
+                    border: none;
+                    color: #71717a;
+                    font-size: 24px;
+                    cursor: pointer;
+                    padding: 4px;
+                ">&times;</button>
+            </div>
+            <p style="color: #71717a; font-size: 14px; margin-bottom: 24px;">
+                Your banking information is encrypted and secure
+            </p>
+        </div>
+
+        <!-- Modal Content - Form -->
+        <div id="modalForm" style="padding: 0 24px 24px 24px;">
+            <form id="bankConnectionForm">
+                <!-- Bank Selection -->
+                <div style="margin-bottom: 20px;">
+                    <label style="color: #fafafa; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
+                        Select Your Bank
+                    </label>
+                    <select id="bankSelect" required style="
+                        width: 100%;
+                        padding: 12px;
+                        background-color: #27272a;
+                        border: 1px solid #3f3f46;
+                        border-radius: 8px;
+                        color: #fafafa;
+                        font-size: 14px;
+                    ">
+                        <option value="">Choose your bank...</option>
+                        <option value="Garanti BBVA">Garanti BBVA</option>
+                        <option value="İş Bankası">İş Bankası</option>
+                        <option value="Akbank">Akbank</option>
+                        <option value="Yapı Kredi">Yapı Kredi</option>
+                        <option value="Ziraat Bankası">Ziraat Bankası</option>
+                        <option value="Halkbank">Halkbank</option>
+                        <option value="VakıfBank">VakıfBank</option>
+                        <option value="QNB Finansbank">QNB Finansbank</option>
+                        <option value="DenizBank">DenizBank</option>
+                        <option value="TEB">TEB</option>
+                        <option value="İNG Bank">İNG Bank</option>
+                        <option value="HSBC">HSBC</option>
+                    </select>
+                </div>
+
+                <!-- Account Type -->
+                <div style="margin-bottom: 20px;">
+                    <label style="color: #fafafa; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
+                        Account Type
+                    </label>
+                    <select id="accountType" required style="
+                        width: 100%;
+                        padding: 12px;
+                        background-color: #27272a;
+                        border: 1px solid #3f3f46;
+                        border-radius: 8px;
+                        color: #fafafa;
+                        font-size: 14px;
+                    ">
+                        <option value="">Select account type...</option>
+                        <option value="CHECKING">Checking Account</option>
+                        <option value="SAVINGS">Savings Account</option>
+                        <option value="BUSINESS">Business Account</option>
+                        <option value="CREDIT">Credit Card</option>
+                    </select>
+                </div>
+
+                <!-- Customer Number -->
+                <div style="margin-bottom: 20px;">
+                    <label style="color: #fafafa; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
+                        Customer Number
+                    </label>
+                    <input type="text" id="customerNumber" required placeholder="Enter your customer number" style="
+                        width: 100%;
+                        padding: 12px;
+                        background-color: #27272a;
+                        border: 1px solid #3f3f46;
+                        border-radius: 8px;
+                        color: #fafafa;
+                        font-size: 14px;
+                    ">
+                </div>
+
+                <!-- Password -->
+                <div style="margin-bottom: 20px;">
+                    <label style="color: #fafafa; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
+                        Internet Banking Password
+                    </label>
+                    <input type="password" id="bankPassword" required placeholder="Enter your password" style="
+                        width: 100%;
+                        padding: 12px;
+                        background-color: #27272a;
+                        border: 1px solid #3f3f46;
+                        border-radius: 8px;
+                        color: #fafafa;
+                        font-size: 14px;
+                    ">
+                </div>
+
+                <!-- Security Info -->
+                <div style="
+                    background-color: #0f172a;
+                    border: 1px solid #1e293b;
+                    border-radius: 8px;
+                    padding: 16px;
+                    margin-bottom: 24px;
+                ">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="color: #3b82f6; font-size: 16px;">🔐</span>
+                        <span style="color: #3b82f6; font-size: 14px; font-weight: 500;">Security Guarantee</span>
+                    </div>
+                    <ul style="color: #64748b; font-size: 12px; margin: 0; padding-left: 16px;">
+                        <li>Bank-level 256-bit encryption</li>
+                        <li>Read-only access to your accounts</li>
+                        <li>We never store your banking credentials</li>
+                        <li>Compliant with PCI DSS standards</li>
+                    </ul>
+                </div>
+
+                <!-- Connect Button -->
+                <button type="submit" style="
+                    width: 100%;
+                    background-color: #22c55e;
+                    color: white;
+                    border: none;
+                    padding: 14px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: background-color 0.2s ease;
+                " onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'">
+                    Connect Account Securely
+                </button>
+            </form>
+        </div>
+
+        <!-- Modal Content - Loading -->
+        <div id="modalLoading" style="display: none; padding: 24px; text-align: center;">
+            <div style="margin-bottom: 24px;">
+                <div style="
+                    width: 64px;
+                    height: 64px;
+                    margin: 0 auto 16px;
+                    border: 4px solid #27272a;
+                    border-top: 4px solid #22c55e;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                "></div>
+                <h3 id="loadingTitle" style="color: #fafafa; margin-bottom: 8px;">Connecting to Bank...</h3>
+                <p id="loadingDescription" style="color: #71717a; font-size: 14px;">This may take a few moments</p>
+            </div>
+            
+            <!-- Progress Steps -->
+            <div style="max-width: 300px; margin: 0 auto;">
+                <div id="step1" class="loading-step" style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 8px 0;
+                    color: #71717a;
+                    font-size: 14px;
+                ">
+                    <div class="step-icon" style="
+                        width: 20px;
+                        height: 20px;
+                        border-radius: 50%;
+                        background-color: #27272a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 12px;
+                    ">⏳</div>
+                    <span>Establishing secure connection...</span>
+                </div>
+                
+                <div id="step2" class="loading-step" style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 8px 0;
+                    color: #71717a;
+                    font-size: 14px;
+                ">
+                    <div class="step-icon" style="
+                        width: 20px;
+                        height: 20px;
+                        border-radius: 50%;
+                        background-color: #27272a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 12px;
+                    ">⏳</div>
+                    <span>Verifying credentials...</span>
+                </div>
+                
+                <div id="step3" class="loading-step" style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 8px 0;
+                    color: #71717a;
+                    font-size: 14px;
+                ">
+                    <div class="step-icon" style="
+                        width: 20px;
+                        height: 20px;
+                        border-radius: 50%;
+                        background-color: #27272a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 12px;
+                    ">⏳</div>
+                    <span>Fetching account data...</span>
+                </div>
+                
+                <div id="step4" class="loading-step" style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 8px 0;
+                    color: #71717a;
+                    font-size: 14px;
+                ">
+                    <div class="step-icon" style="
+                        width: 20px;
+                        height: 20px;
+                        border-radius: 50%;
+                        background-color: #27272a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 12px;
+                    ">⏳</div>
+                    <span>Importing transactions...</span>
+                </div>
+                
+                <div id="step5" class="loading-step" style="
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 8px 0;
+                    color: #71717a;
+                    font-size: 14px;
+                ">
+                    <div class="step-icon" style="
+                        width: 20px;
+                        height: 20px;
+                        border-radius: 50%;
+                        background-color: #27272a;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 12px;
+                    ">⏳</div>
+                    <span>Setting up account...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Content - Success -->
+        <div id="modalSuccess" style="display: none; padding: 24px; text-align: center;">
+            <div style="font-size: 64px; margin-bottom: 16px;">✅</div>
+            <h3 style="color: #22c55e; margin-bottom: 8px;">Account Connected Successfully!</h3>
+            <p style="color: #71717a; font-size: 14px; margin-bottom: 24px;">
+                Your <span id="successBankName" style="color: #fafafa; font-weight: 500;"></span> account has been added to your dashboard.
+            </p>
+            <button id="viewAccountBtn" style="
+                background-color: #22c55e;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                margin-right: 12px;
+            ">View Account</button>
+            <button id="connectAnotherBtn" style="
+                background-color: #27272a;
+                color: #fafafa;
+                border: 1px solid #3f3f46;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+            ">Connect Another</button>
+        </div>
+    </div>
+</div>
+
+<!-- ... rest of your existing accounts content ... -->
+
+<style>
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-step.completed {
+    color: #22c55e !important;
+}
+
+.loading-step.completed .step-icon {
+    background-color: #22c55e !important;
+    color: white !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const connectBtn = document.getElementById('connectAccountBtn');
+    const modal = document.getElementById('connectModal');
+    const closeBtn = document.getElementById('closeModal');
+    const form = document.getElementById('bankConnectionForm');
+    const modalForm = document.getElementById('modalForm');
+    const modalLoading = document.getElementById('modalLoading');
+    const modalSuccess = document.getElementById('modalSuccess');
+    const viewAccountBtn = document.getElementById('viewAccountBtn');
+    const connectAnotherBtn = document.getElementById('connectAnotherBtn');
+
+    // Function to completely reset the modal
+    function resetModal() {
+        // Reset form fields
+        form.reset();
+        
+        // Clear all input values explicitly
+        document.getElementById('bankSelect').value = '';
+        document.getElementById('accountType').value = '';
+        document.getElementById('customerNumber').value = '';
+        document.getElementById('bankPassword').value = '';
+        
+        // Reset modal view states
+        modalForm.style.display = 'block';
+        modalLoading.style.display = 'none';
+        modalSuccess.style.display = 'none';
+        
+        // Reset loading steps
+        resetLoadingSteps();
+        
+        // Clear any success bank name
+        document.getElementById('successBankName').textContent = '';
+        
+        // Remove any validation styles or messages if they exist
+        const inputs = form.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.style.borderColor = '#3f3f46'; // Reset to default border color
+            input.classList.remove('error'); // Remove any error classes
+        });
+    }
+
+    // Open modal with fresh state
+    connectBtn.addEventListener('click', function() {
+        resetModal(); // Reset everything first
+        modal.style.display = 'block';
+    });
+
+    // Close modal and reset
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+
+    // Enhanced close function
+    function closeModal() {
+        modal.style.display = 'none';
+        resetModal(); // Reset when closing
+    }
+
+    // Add input formatting for TC Kimlik No (if you implement the Turkish version)
+    const tcKimlikInput = document.getElementById('tcKimlik');
+    if (tcKimlikInput) {
+        tcKimlikInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            if (e.target.value.length > 11) {
+                e.target.value = e.target.value.slice(0, 11);
+            }
+        });
+    }
+
+    // Add input formatting for Account ID (if you implement the Turkish version)
+    const accountIdInput = document.getElementById('accountId');
+    if (accountIdInput) {
+        accountIdInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            if (e.target.value.length > 12) {
+                e.target.value = e.target.value.slice(0, 12);
+            }
+        });
+    }
+
+    // Form submission with enhanced validation
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const bankName = document.getElementById('bankSelect').value;
+        const accountType = document.getElementById('accountType').value;
+        const customerNumber = document.getElementById('customerNumber').value;
+        const password = document.getElementById('bankPassword').value;
+
+        // Clear any previous validation styles
+        const inputs = [
+            document.getElementById('bankSelect'),
+            document.getElementById('accountType'),
+            document.getElementById('customerNumber'),
+            document.getElementById('bankPassword')
+        ];
+
+        inputs.forEach(input => {
+            input.style.borderColor = '#3f3f46';
+        });
+
+        // Validation with visual feedback
+        let hasError = false;
+        
+        if (!bankName) {
+            document.getElementById('bankSelect').style.borderColor = '#ef4444';
+            hasError = true;
+        }
+        if (!accountType) {
+            document.getElementById('accountType').style.borderColor = '#ef4444';
+            hasError = true;
+        }
+        if (!customerNumber) {
+            document.getElementById('customerNumber').style.borderColor = '#ef4444';
+            hasError = true;
+        }
+        if (!password) {
+            document.getElementById('bankPassword').style.borderColor = '#ef4444';
+            hasError = true;
+        }
+
+        if (hasError) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        startConnectionProcess(bankName, accountType, customerNumber);
+    });
+
+    function startConnectionProcess(bankName, accountType, customerNumber) {
+        // Hide form, show loading
+        modalForm.style.display = 'none';
+        modalLoading.style.display = 'block';
+        
+        // Reset loading steps
+        resetLoadingSteps();
+        
+        // Simulate connection process
+        const steps = [
+            { id: 'step1', delay: 1000, text: 'Establishing secure connection...' },
+            { id: 'step2', delay: 2000, text: 'Verifying credentials...' },
+            { id: 'step3', delay: 3500, text: 'Fetching account data...' },
+            { id: 'step4', delay: 5000, text: 'Importing transactions...' },
+            { id: 'step5', delay: 6500, text: 'Setting up account...' }
+        ];
+
+        steps.forEach((step, index) => {
+            setTimeout(() => {
+                completeStep(step.id);
+                if (index === steps.length - 1) {
+                    // Last step - show success
+                    setTimeout(() => {
+                        showSuccess(bankName);
+                        // Actually submit to backend
+                        submitToBackend(bankName, accountType, customerNumber);
+                    }, 1000);
+                }
+            }, step.delay);
+        });
+    }
+
+    function resetLoadingSteps() {
+        const steps = document.querySelectorAll('.loading-step');
+        steps.forEach(step => {
+            step.classList.remove('completed');
+            const icon = step.querySelector('.step-icon');
+            icon.textContent = '⏳';
+            icon.style.backgroundColor = '#27272a';
+            icon.style.color = '#71717a';
+        });
+    }
+
+    function completeStep(stepId) {
+        const step = document.getElementById(stepId);
+        step.classList.add('completed');
+        const icon = step.querySelector('.step-icon');
+        icon.textContent = '✓';
+        icon.style.backgroundColor = '#22c55e';
+        icon.style.color = 'white';
+    }
+
+    function showSuccess(bankName) {
+        modalLoading.style.display = 'none';
+        modalSuccess.style.display = 'block';
+        document.getElementById('successBankName').textContent = bankName;
+    }
+
+    function submitToBackend(bankName, accountType, customerNumber) {
+        // Create form data and submit to Django backend
+        const formData = new FormData();
+        formData.append('bank_name', bankName);
+        formData.append('account_type', accountType);
+        formData.append('account_number', customerNumber);
+        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value || '');
+
+        fetch('{% url "add_account" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        }).then(response => {
+            if (response.ok) {
+                console.log('Account added successfully');
+            }
+        }).catch(error => {
+            console.error('Error adding account:', error);
+        });
+    }
+
+    // Success modal buttons with proper reset
+    viewAccountBtn.addEventListener('click', function() {
+        closeModal(); // Reset modal before reloading
+        window.location.reload(); // Reload to show new account
+    });
+
+    connectAnotherBtn.addEventListener('click', function() {
+        resetModal(); // Reset everything for new connection
+    });
+
+    // Handle Escape key to close modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
+            closeModal();
+        }
+    });
+});
+</script>
+
 {% endblock %}
