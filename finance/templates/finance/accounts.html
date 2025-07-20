@@ -3,7 +3,6 @@
 {% block page_title %}Accounts{% endblock %}
 
 {% block content %}
-<!-- Header -->
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
     <div>
         <h2 style="color: #fafafa; font-size: 24px; font-weight: 600; margin-bottom: 8px;">My Accounts</h2>
@@ -24,7 +23,6 @@
     </button>
 </div>
 
-<!-- Account Summary -->
 <div class="grid" style="margin-bottom: 32px;">
     <div class="card">
         <h3>Total Balance</h3>
@@ -51,7 +49,6 @@
     </div>
 </div>
 
-<!-- Accounts List -->
 {% for account_data in accounts_data %}
 <div class="card" style="margin-bottom: 24px;">
     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px;">
@@ -92,7 +89,6 @@
         </div>
     </div>
     
-    <!-- Account Stats -->
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; padding: 16px; background-color: #0a0a0a; border-radius: 8px;">
         <div style="text-align: center;">
             <p style="color: #22c55e; font-size: 16px; font-weight: 600;">₺{{ account_data.monthly_inflow|floatformat:2 }}</p>
@@ -108,7 +104,6 @@
         </div>
     </div>
     
-    <!-- Recent Transactions -->
     <div>
         <h4 style="color: #fafafa; font-size: 14px; font-weight: 600; margin-bottom: 16px;">Recent Transactions</h4>
         
@@ -191,7 +186,7 @@
     </button>
 </div>
 {% endfor %}
-<!-- Connect Account Modal -->
+
 <div id="connectModal" style="
     display: none;
     position: fixed;
@@ -216,7 +211,6 @@
         max-height: 90vh;
         overflow-y: auto;
     ">
-        <!-- Modal Header -->
         <div style="padding: 24px 24px 0 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <h3 style="color: #fafafa; font-size: 20px; font-weight: 600;">Connect Your Bank Account</h3>
@@ -234,10 +228,8 @@
             </p>
         </div>
 
-        <!-- Modal Content - Form -->
         <div id="modalForm" style="padding: 0 24px 24px 24px;">
             <form id="bankConnectionForm">
-                <!-- Bank Selection -->
                 <div style="margin-bottom: 20px;">
                     <label style="color: #fafafa; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
                         Select Your Bank
@@ -267,7 +259,6 @@
                     </select>
                 </div>
 
-                <!-- Account Type -->
                 <div style="margin-bottom: 20px;">
                     <label style="color: #fafafa; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
                         Account Type
@@ -289,7 +280,6 @@
                     </select>
                 </div>
 
-                <!-- Customer Number -->
                 <div style="margin-bottom: 20px;">
                     <label style="color: #fafafa; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
                         Customer Number
@@ -305,7 +295,6 @@
                     ">
                 </div>
 
-                <!-- Password -->
                 <div style="margin-bottom: 20px;">
                     <label style="color: #fafafa; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
                         Internet Banking Password
@@ -321,7 +310,6 @@
                     ">
                 </div>
 
-                <!-- Security Info -->
                 <div style="
                     background-color: #0f172a;
                     border: 1px solid #1e293b;
@@ -341,7 +329,6 @@
                     </ul>
                 </div>
 
-                <!-- Connect Button -->
                 <button type="submit" style="
                     width: 100%;
                     background-color: #22c55e;
@@ -359,7 +346,6 @@
             </form>
         </div>
 
-        <!-- Modal Content - Loading -->
         <div id="modalLoading" style="display: none; padding: 24px; text-align: center;">
             <div style="margin-bottom: 24px;">
                 <div style="
@@ -375,7 +361,6 @@
                 <p id="loadingDescription" style="color: #71717a; font-size: 14px;">This may take a few moments</p>
             </div>
             
-            <!-- Progress Steps -->
             <div style="max-width: 300px; margin: 0 auto;">
                 <div id="step1" class="loading-step" style="
                     display: flex;
@@ -484,7 +469,6 @@
             </div>
         </div>
 
-        <!-- Modal Content - Success -->
         <div id="modalSuccess" style="display: none; padding: 24px; text-align: center;">
             <div style="font-size: 64px; margin-bottom: 16px;">✅</div>
             <h3 style="color: #22c55e; margin-bottom: 8px;">Account Connected Successfully!</h3>
@@ -514,8 +498,6 @@
     </div>
 </div>
 
-<!-- ... rest of your existing accounts content ... -->
-
 <style>
 @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -544,55 +526,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const viewAccountBtn = document.getElementById('viewAccountBtn');
     const connectAnotherBtn = document.getElementById('connectAnotherBtn');
 
-    // Function to completely reset the modal
     function resetModal() {
-        // Reset form fields
         form.reset();
         
-        // Clear all input values explicitly
         document.getElementById('bankSelect').value = '';
         document.getElementById('accountType').value = '';
         document.getElementById('customerNumber').value = '';
         document.getElementById('bankPassword').value = '';
         
-        // Reset modal view states
         modalForm.style.display = 'block';
         modalLoading.style.display = 'none';
         modalSuccess.style.display = 'none';
         
-        // Reset loading steps
         resetLoadingSteps();
         
-        // Clear any success bank name
         document.getElementById('successBankName').textContent = '';
         
-        // Remove any validation styles or messages if they exist
         const inputs = form.querySelectorAll('input, select');
         inputs.forEach(input => {
-            input.style.borderColor = '#3f3f46'; // Reset to default border color
-            input.classList.remove('error'); // Remove any error classes
+            input.style.borderColor = '#3f3f46';
+            input.classList.remove('error');
         });
     }
 
-    // Open modal with fresh state
     connectBtn.addEventListener('click', function() {
-        resetModal(); // Reset everything first
+        resetModal();
         modal.style.display = 'block';
     });
 
-    // Close modal and reset
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', function(e) {
         if (e.target === modal) closeModal();
     });
 
-    // Enhanced close function
     function closeModal() {
         modal.style.display = 'none';
-        resetModal(); // Reset when closing
+        resetModal();
     }
 
-    // Add input formatting for TC Kimlik No (if you implement the Turkish version)
     const tcKimlikInput = document.getElementById('tcKimlik');
     if (tcKimlikInput) {
         tcKimlikInput.addEventListener('input', function(e) {
@@ -603,7 +574,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Add input formatting for Account ID (if you implement the Turkish version)
     const accountIdInput = document.getElementById('accountId');
     if (accountIdInput) {
         accountIdInput.addEventListener('input', function(e) {
@@ -614,7 +584,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Form submission with enhanced validation
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -623,7 +592,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const customerNumber = document.getElementById('customerNumber').value;
         const password = document.getElementById('bankPassword').value;
 
-        // Clear any previous validation styles
         const inputs = [
             document.getElementById('bankSelect'),
             document.getElementById('accountType'),
@@ -635,7 +603,6 @@ document.addEventListener('DOMContentLoaded', function() {
             input.style.borderColor = '#3f3f46';
         });
 
-        // Validation with visual feedback
         let hasError = false;
         
         if (!bankName) {
@@ -664,14 +631,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function startConnectionProcess(bankName, accountType, customerNumber) {
-        // Hide form, show loading
         modalForm.style.display = 'none';
         modalLoading.style.display = 'block';
         
-        // Reset loading steps
         resetLoadingSteps();
         
-        // Simulate connection process
         const steps = [
             { id: 'step1', delay: 1000, text: 'Establishing secure connection...' },
             { id: 'step2', delay: 2000, text: 'Verifying credentials...' },
@@ -684,10 +648,8 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 completeStep(step.id);
                 if (index === steps.length - 1) {
-                    // Last step - show success
                     setTimeout(() => {
                         showSuccess(bankName);
-                        // Actually submit to backend
                         submitToBackend(bankName, accountType, customerNumber);
                     }, 1000);
                 }
@@ -722,7 +684,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function submitToBackend(bankName, accountType, customerNumber) {
-        // Create form data and submit to Django backend
         const formData = new FormData();
         formData.append('bank_name', bankName);
         formData.append('account_type', accountType);
@@ -744,17 +705,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Success modal buttons with proper reset
     viewAccountBtn.addEventListener('click', function() {
-        closeModal(); // Reset modal before reloading
-        window.location.reload(); // Reload to show new account
+        closeModal();
+        window.location.reload();
     });
 
     connectAnotherBtn.addEventListener('click', function() {
-        resetModal(); // Reset everything for new connection
+        resetModal();
     });
 
-    // Handle Escape key to close modal
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && modal.style.display === 'block') {
             closeModal();

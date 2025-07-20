@@ -3,7 +3,6 @@
 {% block page_title %}Analytics{% endblock %}
 
 {% block content %}
-<!-- Header with time period selector -->
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
     <div style="display: flex; gap: 16px; align-items: center;">
         <form method="GET" id="analyticsFilterForm">
@@ -40,7 +39,6 @@
     </button>
 </div>
 
-<!-- Key Metrics Grid - NOW RESPONDS TO FILTER -->
 <div class="grid" style="margin-bottom: 32px;">
     <div class="card">
         <h3>{{ period_label }} Spending</h3>
@@ -71,9 +69,7 @@
     </div>
 </div>
 
-<!-- Charts Section -->
 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px;">
-    <!-- Monthly Spending Trend -->
     <div class="card">
         <h3 class="section-title">Monthly Spending Trend</h3>
         <div style="height: 300px; position: relative;">
@@ -81,7 +77,6 @@
         </div>
     </div>
     
-    <!-- Top Merchants -->
     <div class="card">
         <h3 class="section-title">Top Merchants</h3>
         <div style="height: 300px; overflow: hidden; position: relative;" id="merchantsContainer">
@@ -101,7 +96,6 @@
             </div>
             
             {% if top_merchants|length > 3 %}
-            <!-- Gradient overlay for fade effect when collapsed -->
             <div id="fadeOverlay" style="
                 position: absolute;
                 bottom: 60px;
@@ -112,7 +106,6 @@
                 pointer-events: none;
             "></div>
             
-            <!-- Expand/Collapse Button -->
             <div style="
                 position: absolute;
                 bottom: 0;
@@ -144,7 +137,6 @@
     </div>
 </div>
 
-<!-- Category Analysis -->
 <div class="card" style="margin-bottom: 32px;">
     <h3 class="section-title">Spending by Category</h3>
     
@@ -167,7 +159,6 @@
     </div>
 </div>
 
-<!-- Account Performance -->
 <div class="card">
     <h3 class="section-title">Account Performance</h3>
     
@@ -206,30 +197,24 @@
 </div>
 
 <script>
-// USE REAL DATA FROM VIEWS
 const realMonthlyTrends = {{ monthly_trends|safe }};
 const realDailySpending = {{ daily_spending|safe }};
 
-// Filter functionality
 function submitAnalyticsFilter() {
     document.getElementById('analyticsFilterForm').submit();
 }
 
 function exportAnalyticsReport() {
-    // Get current filter parameters
     const form = document.getElementById('analyticsFilterForm');
     const formData = new FormData(form);
     const params = new URLSearchParams(formData);
     
-    // Add export parameter
     params.append('export', 'report');
     
-    // Create download link
     const url = window.location.pathname + '?' + params.toString();
     window.location.href = url;
 }
 
-// Add this right after the realMonthlyTrends declaration for debugging
 console.log('Monthly trends data structure:', realMonthlyTrends);
 
 function drawMonthlyTrendChart() {
@@ -249,16 +234,13 @@ function drawMonthlyTrendChart() {
         return;
     }
     
-    // Find min and max values for scaling
     const values = realMonthlyTrends.map(item => item.spending);
     const minValue = Math.min(...values) - 100;
     const maxValue = Math.max(...values) + 100;
     const valueRange = maxValue - minValue;
     
-    // Store data points for tooltip interaction
     const dataPoints = [];
     
-    // Helper functions
     function scaleX(index) {
         return padding + (index / (realMonthlyTrends.length - 1)) * chartWidth;
     }
@@ -267,14 +249,11 @@ function drawMonthlyTrendChart() {
         return padding + chartHeight - ((value - minValue) / valueRange) * chartHeight;
     }
     
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Draw grid lines
     ctx.strokeStyle = '#27272a';
     ctx.lineWidth = 1;
     
-    // Horizontal grid lines
     for (let i = 0; i <= 5; i++) {
         const y = padding + (i / 5) * chartHeight;
         ctx.beginPath();
@@ -283,7 +262,6 @@ function drawMonthlyTrendChart() {
         ctx.stroke();
     }
     
-    // Vertical grid lines
     for (let i = 0; i < realMonthlyTrends.length; i++) {
         const x = scaleX(i);
         ctx.beginPath();
@@ -292,7 +270,6 @@ function drawMonthlyTrendChart() {
         ctx.stroke();
     }
     
-    // Draw Y-axis labels
     ctx.fillStyle = '#71717a';
     ctx.font = '12px system-ui';
     ctx.textAlign = 'right';
@@ -304,7 +281,6 @@ function drawMonthlyTrendChart() {
         ctx.fillText(`₺${Math.round(value)}`, padding - 10, y);
     }
     
-    // Draw X-axis labels
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     
@@ -313,7 +289,6 @@ function drawMonthlyTrendChart() {
         ctx.fillText(realMonthlyTrends[i].month, x, padding + chartHeight + 10);
     }
     
-    // Draw spending line
     ctx.strokeStyle = '#ef4444';
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
@@ -332,13 +307,11 @@ function drawMonthlyTrendChart() {
     }
     ctx.stroke();
     
-    // Draw data points and store their positions
     ctx.fillStyle = '#ef4444';
     for (let i = 0; i < realMonthlyTrends.length; i++) {
         const x = scaleX(i);
         const y = scaleY(realMonthlyTrends[i].spending);
         
-        // Store data point for tooltip
         dataPoints.push({
             x: x,
             y: y,
@@ -351,7 +324,6 @@ function drawMonthlyTrendChart() {
         ctx.fill();
     }
     
-    // Add tooltip functionality
     let tooltip = document.getElementById('chartTooltip');
     if (!tooltip) {
         tooltip = document.createElement('div');
@@ -374,7 +346,6 @@ function drawMonthlyTrendChart() {
         document.body.appendChild(tooltip);
     }
     
-    // Mouse event handlers
     function getMousePos(e) {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
@@ -408,7 +379,6 @@ function drawMonthlyTrendChart() {
         const nearestPoint = findNearestPoint(mousePos.x, mousePos.y);
         
         if (nearestPoint) {
-            // Show tooltip
             const rect = canvas.getBoundingClientRect();
             const tooltipX = rect.left + (nearestPoint.x / canvas.width) * rect.width;
             const tooltipY = rect.top + (nearestPoint.y / canvas.height) * rect.height;
@@ -423,20 +393,16 @@ function drawMonthlyTrendChart() {
             tooltip.style.top = (tooltipY - 50) + 'px';
             tooltip.style.display = 'block';
             
-            // Change cursor
             canvas.style.cursor = 'pointer';
             
-            // Highlight the point
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawChart(); // Redraw chart
+            drawChart();
             
-            // Draw highlighted point
             ctx.fillStyle = '#fca311';
             ctx.beginPath();
             ctx.arc(nearestPoint.x, nearestPoint.y, 6, 0, 2 * Math.PI);
             ctx.fill();
             
-            // Draw white border around highlighted point
             ctx.strokeStyle = '#fafafa';
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -444,11 +410,9 @@ function drawMonthlyTrendChart() {
             ctx.stroke();
             
         } else {
-            // Hide tooltip
             tooltip.style.display = 'none';
             canvas.style.cursor = 'default';
             
-            // Redraw chart without highlight
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawChart();
         }
@@ -461,13 +425,10 @@ function drawMonthlyTrendChart() {
         drawChart();
     });
     
-    // Helper function to redraw the chart (without highlights)
     function drawChart() {
-        // Draw grid lines
         ctx.strokeStyle = '#27272a';
         ctx.lineWidth = 1;
         
-        // Horizontal grid lines
         for (let i = 0; i <= 5; i++) {
             const y = padding + (i / 5) * chartHeight;
             ctx.beginPath();
@@ -476,7 +437,6 @@ function drawMonthlyTrendChart() {
             ctx.stroke();
         }
         
-        // Vertical grid lines
         for (let i = 0; i < realMonthlyTrends.length; i++) {
             const x = scaleX(i);
             ctx.beginPath();
@@ -485,7 +445,6 @@ function drawMonthlyTrendChart() {
             ctx.stroke();
         }
         
-        // Draw Y-axis labels
         ctx.fillStyle = '#71717a';
         ctx.font = '12px system-ui';
         ctx.textAlign = 'right';
@@ -497,7 +456,6 @@ function drawMonthlyTrendChart() {
             ctx.fillText(`₺${Math.round(value)}`, padding - 10, y);
         }
         
-        // Draw X-axis labels
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         
@@ -506,7 +464,6 @@ function drawMonthlyTrendChart() {
             ctx.fillText(realMonthlyTrends[i].month, x, padding + chartHeight + 10);
         }
         
-        // Draw spending line
         ctx.strokeStyle = '#ef4444';
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
@@ -525,7 +482,6 @@ function drawMonthlyTrendChart() {
         }
         ctx.stroke();
         
-        // Draw data points
         ctx.fillStyle = '#ef4444';
         for (let i = 0; i < realMonthlyTrends.length; i++) {
             const x = scaleX(i);
@@ -538,12 +494,10 @@ function drawMonthlyTrendChart() {
     }
 }
 
-// Draw chart when page loads
 document.addEventListener('DOMContentLoaded', function() {
     drawMonthlyTrendChart();
 });
 
-// Add merchant list toggle functionality
 let merchantsExpanded = false;
 
 function toggleMerchantsList() {
@@ -556,53 +510,43 @@ function toggleMerchantsList() {
     merchantsExpanded = !merchantsExpanded;
     
     if (merchantsExpanded) {
-        // Show all merchants
         hiddenMerchants.forEach(merchant => {
             merchant.style.display = 'block';
             merchant.style.animation = 'fadeIn 0.3s ease-in-out';
         });
         
-        // Update button
         toggleText.textContent = 'Show Less';
         toggleIcon.style.transform = 'rotate(180deg)';
         toggleIcon.textContent = '▲';
         
-        // Hide fade overlay
         if (fadeOverlay) {
             fadeOverlay.style.display = 'none';
         }
         
-        // Expand container height
         container.style.height = 'auto';
         container.style.maxHeight = '500px';
         container.style.overflowY = 'auto';
         
     } else {
-        // Hide extra merchants
         hiddenMerchants.forEach(merchant => {
             merchant.style.display = 'none';
         });
         
-        // Update button
         toggleText.textContent = 'Show More';
         toggleIcon.style.transform = 'rotate(0deg)';
         toggleIcon.textContent = '▼';
         
-        // Show fade overlay
         if (fadeOverlay) {
             fadeOverlay.style.display = 'block';
         }
         
-        // Reset container height
         container.style.height = '300px';
         container.style.overflowY = 'hidden';
         
-        // Scroll back to top of merchant list
         container.scrollTop = 0;
     }
 }
 
-// Add CSS animation for smooth appearance
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeIn {
@@ -634,7 +578,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Existing chart drawing code...
 drawMonthlyTrendChart();
 </script>
 {% endblock %}

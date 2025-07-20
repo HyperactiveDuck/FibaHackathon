@@ -1,5 +1,5 @@
 from django.db import models
-from django.shortcuts import render, redirect  # Add redirect here
+from django.shortcuts import render, redirect
 from django.db.models import Sum, Count
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -10,55 +10,56 @@ from django.http import HttpResponse
 import csv
 
 def dashboard(request):
-    # For demo purposes, get the first user if not authenticated
+    # Try to get the logged in user, otherwise use demo user
     if request.user.is_authenticated:
         user = request.user
     else:
         try:
-            user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
+            user = User.objects.filter(id=2).first()
             if not user:
-                user = User.objects.first()  # Fallback if user ID 2 doesn't exist
+                user = User.objects.first()
         except:
             user = None
     
     if user:
-        # Get user accounts
+        # Get all accounts for this user
         accounts = Account.objects.filter(user=user)
         
-        # Calculate total balance
+        # Add up all account balances
         total_balance = accounts.aggregate(Sum('balance'))['balance__sum'] or 0
         
-        # Get current month transactions
+        # Find transactions from this month
         current_month = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         monthly_transactions = Transaction.objects.filter(
             user=user,
             date__gte=current_month
         )
         
-        # Calculate monthly spending (negative amounts)
+        # Calculate how much was spent this month (negative amounts are expenses)
         monthly_spending = monthly_transactions.filter(amount__lt=0).aggregate(
             Sum('amount')
         )['amount__sum'] or 0
         monthly_spending = abs(monthly_spending)
         
-        # Calculate savings this month (positive amounts)
+        # Calculate income this month (positive amounts)
         monthly_income = monthly_transactions.filter(amount__gt=0).aggregate(
             Sum('amount')
         )['amount__sum'] or 0
         savings_this_month = monthly_income - monthly_spending
         
-        # Upcoming bills (mock data for now)
+        # Mock data for upcoming bills
         upcoming_bills = 340.00
         
-        # Spending by category
+        # Group spending by category
         category_spending = monthly_transactions.filter(amount__lt=0).values('category').annotate(
             total=Sum('amount')
         ).order_by('total')
         
-        # Convert to chart data
+        # Prepare data for spending chart
         spending_categories = []
         total_spending_amount = sum([abs(float(cat['total'])) for cat in category_spending])
         
+        # Colors for each spending category
         category_colors = {
             'FOOD_DINING': '#ef4444',
             'SHOPPING': '#f59e0b',
@@ -68,6 +69,7 @@ def dashboard(request):
             'SALARY': '#22c55e',
         }
         
+        # Nice labels for categories
         category_labels = {
             'FOOD_DINING': 'Food & Dining',
             'SHOPPING': 'Shopping',
@@ -77,17 +79,18 @@ def dashboard(request):
             'SALARY': 'Income',
         }
         
+        # Build chart data
         for cat in category_spending:
-            amount = abs(float(cat['total']))  # Convert Decimal to float
+            amount = abs(float(cat['total']))
             percentage = (amount / total_spending_amount * 100) if total_spending_amount > 0 else 0
             spending_categories.append({
                 'label': category_labels.get(cat['category'], cat['category']),
-                'value': amount,  # Now it's a float
+                'value': amount,
                 'percentage': round(percentage, 1),
                 'color': category_colors.get(cat['category'], '#64748b')
             })
         
-        # Account distribution
+        # Prepare data for account distribution chart
         account_distribution = []
         total_balance_float = float(total_balance) if total_balance else 0
         colors = [
@@ -98,10 +101,10 @@ def dashboard(request):
         ]
         
         for index, account in enumerate(accounts):
-            account_balance = float(account.balance)  # Convert Decimal to float
+            account_balance = float(account.balance)
             percentage = (account_balance / total_balance_float * 100) if total_balance_float > 0 else 0
             
-            # Create unique label for each account
+            # Create account label
             label = f"{account.bank_name}"
             if hasattr(account, 'account_type') and account.account_type:
                 label += f" ({account.account_type})"
@@ -111,17 +114,17 @@ def dashboard(request):
             
             account_distribution.append({
                 'label': label,
-                'value': account_balance,  # Now it's a float
+                'value': account_balance,
                 'percentage': round(percentage, 1),
-                'color': colors[index % len(colors)]  # Ensure unique color per account
+                'color': colors[index % len(colors)]
             })
         
-        # Recent transactions
+        # Get the 3 most recent transactions
         recent_transactions = Transaction.objects.filter(user=user).order_by('-date')[:3]
         
         user_name = user.first_name or user.username
         
-        # Convert all Decimal values to float for template
+        # Convert all decimal values to floats for the template
         context = {
             'user_name': user_name,
             'total_balance': float(total_balance) if total_balance else 0,
@@ -130,12 +133,12 @@ def dashboard(request):
             'savings_this_month': float(savings_this_month) if savings_this_month else 0,
             'savings_goal': 400.00,
             'upcoming_bills': upcoming_bills,
-            'spending_categories': json.dumps(spending_categories),  # Now JSON serializable
-            'account_distribution': json.dumps(account_distribution),  # Now JSON serializable
+            'spending_categories': json.dumps(spending_categories),
+            'account_distribution': json.dumps(account_distribution),
             'recent_transactions': recent_transactions,
         }
     else:
-        # Fallback data if no user
+        # Show demo data if no user found
         context = {
             'user_name': "Demo User",
             'total_balance': 18201.05,
@@ -152,25 +155,25 @@ def dashboard(request):
     return render(request, 'finance/dashboard.html', context)
 
 def accounts(request):
-    # Get demo user if not authenticated
+    # Try to get user, fallback to demo
     if request.user.is_authenticated:
         user = request.user
     else:
         try:
-            user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
+            user = User.objects.filter(id=2).first()
             if not user:
-                user = User.objects.first()  # Fallback if user ID 2 doesn't exist
+                user = User.objects.first()
         except:
             user = None
     
     if user:
-        # Get all user accounts
+        # Get all accounts for this user
         user_accounts = Account.objects.filter(user=user)
         
-        # Calculate total balance across all accounts
+        # Calculate total across all accounts
         total_balance = user_accounts.aggregate(Sum('balance'))['balance__sum'] or 0
         
-        # Get account statistics
+        # Get stats for each account
         accounts_data = []
         for account in user_accounts:
             # Get recent transactions for this account
@@ -178,7 +181,7 @@ def accounts(request):
                 account=account
             ).order_by('-date')[:5]
             
-            # Calculate monthly activity
+            # Calculate this month's activity
             current_month = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
             monthly_transactions = Transaction.objects.filter(
                 account=account,
@@ -211,13 +214,13 @@ def accounts(request):
     return render(request, 'finance/accounts.html', context)
 
 def transactions(request):
-    # Get the user (same logic as before)
+    # Get user like before
     if request.user.is_authenticated:
         user = request.user
     else:
-        user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
+        user = User.objects.filter(id=2).first()
         if not user:
-            user = User.objects.first()  # Fallback if user ID 2 doesn't exist
+            user = User.objects.first()
     
     if not user:
         return render(request, 'finance/transactions.html', {'transactions': []})
@@ -225,19 +228,19 @@ def transactions(request):
     # Start with all user transactions
     transactions = Transaction.objects.filter(user=user)
     
-    # Apply account filter - FIX: Use pk instead of id
+    # Filter by account if selected
     account_filter = request.GET.get('account')
     if account_filter:
         try:
             account_id = int(account_filter)
-            transactions = transactions.filter(account__pk=account_id)  # Changed from account_id to account__pk
-            print(f"Filtering by account PK: {account_id}")  # Debug line
-            print(f"Transactions found: {transactions.count()}")  # Debug line
+            transactions = transactions.filter(account__pk=account_id)
+            print(f"Filtering by account PK: {account_id}")
+            print(f"Transactions found: {transactions.count()}")
         except (ValueError, TypeError):
-            print(f"Invalid account filter: {account_filter}")  # Debug line
+            print(f"Invalid account filter: {account_filter}")
             pass
     
-    # Apply date range filter
+    # Filter by date range
     date_range = request.GET.get('date_range', '30')
     now = timezone.now()
     
@@ -261,14 +264,13 @@ def transactions(request):
             date__gte=first_day_last_month,
             date__lt=first_day_this_month
         )
-    # 'all' means no date filter
     
-    # Apply category filter
+    # Filter by category if selected
     category_filter = request.GET.get('category')
     if category_filter:
         transactions = transactions.filter(category=category_filter)
     
-    # Apply search filter
+    # Search in merchant, description, or transaction ID
     search_query = request.GET.get('search')
     if search_query:
         transactions = transactions.filter(
@@ -277,7 +279,7 @@ def transactions(request):
             models.Q(transaction_id__icontains=search_query)
         )
     
-    # Handle CSV export
+    # Export to CSV if requested
     if request.GET.get('export') == 'csv':
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="transactions.csv"'
@@ -297,22 +299,22 @@ def transactions(request):
         
         return response
     
-    # Order transactions by date (newest first)
+    # Sort by newest first
     transactions = transactions.order_by('-date')
     
-    # Calculate summary statistics for filtered data
+    # Calculate summary stats for filtered data
     total_inflow = transactions.filter(amount__gt=0).aggregate(Sum('amount'))['amount__sum'] or 0
     total_outflow = transactions.filter(amount__lt=0).aggregate(Sum('amount'))['amount__sum'] or 0
-    net_change = total_inflow + total_outflow  # outflow is negative, so this is correct
+    net_change = total_inflow + total_outflow
     transaction_count = transactions.count()
     
-    # Get user accounts for the filter dropdown
+    # Get accounts for filter dropdown
     accounts = Account.objects.filter(user=user)
     
-    # Debug: Print all accounts and their PKs
+    # Debug: show available accounts
     print("Available accounts:")
     for acc in accounts:
-        print(f"  PK: {acc.pk}, Bank: {acc.bank_name}")  # Changed from acc.id to acc.pk
+        print(f"  PK: {acc.pk}, Bank: {acc.bank_name}")
     
     context = {
         'transactions': transactions,
@@ -329,27 +331,27 @@ def settings(request):
     return render(request, 'finance/settings.html')
 
 def budgets(request):
-    # Get demo user if not authenticated
+    # Get user like other views
     if request.user.is_authenticated:
         user = request.user
     else:
         try:
-            user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
+            user = User.objects.filter(id=2).first()
             if not user:
-                user = User.objects.first()  # Fallback if user ID 2 doesn't exist
+                user = User.objects.first()
         except:
             user = None
     
     if user:
-        # Get current month transactions
+        # Get this month's spending transactions
         current_month = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         monthly_transactions = Transaction.objects.filter(
             user=user,
             date__gte=current_month,
-            amount__lt=0  # Only spending (negative amounts)
+            amount__lt=0
         )
         
-        # Define budget limits (these could come from a Budget model later)
+        # Set budget limits for each category
         budget_limits = {
             'FOOD_DINING': 800.00,
             'SHOPPING': 600.00,
@@ -358,16 +360,17 @@ def budgets(request):
             'ENTERTAINMENT': 200.00,
         }
         
-        # Calculate spending by category
+        # Calculate how much was spent in each category
         category_spending = monthly_transactions.values('category').annotate(
             total=Sum('amount')
         )
         
-        # Create budget data
+        # Build budget data for each category
         budget_data = []
         total_budget = sum(budget_limits.values())
         total_spent = 0
         
+        # Nice labels and icons for categories
         category_labels = {
             'FOOD_DINING': 'Food & Dining',
             'SHOPPING': 'Shopping',
@@ -385,18 +388,18 @@ def budgets(request):
         }
         
         for category, limit in budget_limits.items():
-            # Find spending for this category
+            # Find how much was spent in this category
             spent = 0
             for cat_data in category_spending:
                 if cat_data['category'] == category:
-                    spent = abs(float(cat_data['total']))  # Convert Decimal to float
+                    spent = abs(float(cat_data['total']))
                     break
             
             total_spent += spent
-            percentage_used = (spent / limit * 100) if limit > 0 else 0  # Now both are floats
+            percentage_used = (spent / limit * 100) if limit > 0 else 0
             remaining = limit - spent
             
-            # Determine status
+            # Determine status color based on usage
             if percentage_used >= 100:
                 status = 'over'
                 status_color = '#ef4444'
@@ -412,14 +415,14 @@ def budgets(request):
                 'label': category_labels.get(category, category),
                 'icon': category_icons.get(category, '💳'),
                 'limit': limit,
-                'spent': spent,  # Already converted to float
+                'spent': spent,
                 'remaining': remaining,
                 'percentage_used': round(percentage_used, 1),
                 'status': status,
                 'status_color': status_color,
             })
         
-        # Sort by percentage used (highest first)
+        # Sort by percentage used (worst first)
         budget_data.sort(key=lambda x: x['percentage_used'], reverse=True)
         
         # Get recent transactions for each category
@@ -435,7 +438,7 @@ def budgets(request):
         # Calculate overall budget health
         overall_percentage = (total_spent / total_budget * 100) if total_budget > 0 else 0
         days_in_month = timezone.now().day
-        days_total = 30  # Approximate
+        days_total = 30
         expected_percentage = (days_in_month / days_total * 100)
         
         if overall_percentage <= expected_percentage:
@@ -450,8 +453,8 @@ def budgets(request):
         
         context = {
             'budget_data': budget_data,
-            'total_budget': total_budget,  # This is the limit (₺2,500)
-            'total_spent': total_spent,    # This should be ₺2,397
+            'total_budget': total_budget,
+            'total_spent': total_spent,
             'total_remaining': total_budget - total_spent,
             'overall_percentage': round(overall_percentage, 1),
             'budget_health': budget_health,
@@ -460,7 +463,7 @@ def budgets(request):
             'current_month_name': current_month.strftime('%B %Y'),
         }
     else:
-        # Fallback data
+        # No user data available
         context = {
             'budget_data': [],
             'total_budget': 0,
@@ -476,22 +479,22 @@ def budgets(request):
     return render(request, 'finance/budgets.html', context)
 
 def analytics(request):
-    # Get the user (same logic as before)
+    # Get user like other views
     if request.user.is_authenticated:
         user = request.user
     else:
-        user = User.objects.filter(id=2).first()  # Get user with ID 2 (ahmet_yilmaz)
+        user = User.objects.filter(id=2).first()
         if not user:
-            user = User.objects.first()  # Fallback if user ID 2 doesn't exist
+            user = User.objects.first()
     
     if not user:
         return render(request, 'finance/analytics.html', {})
     
-    # Get time period filter
-    period = request.GET.get('period', '12')  # Default to 12 months
+    # Get time period from filter
+    period = request.GET.get('period', '12')
     now = timezone.now()
     
-    # Calculate date range based on period
+    # Calculate date range based on selected period
     if period == '3':
         start_date = now - timedelta(days=90)
         months_count = 3
@@ -506,7 +509,7 @@ def analytics(request):
         months_count = now.month
     elif period == 'all':
         start_date = None
-        # Calculate actual months span for 'all'
+        # Calculate how many months of data we have
         first_transaction = Transaction.objects.filter(user=user).order_by('date').first()
         if first_transaction:
             months_diff = (now.year - first_transaction.date.year) * 12 + (now.month - first_transaction.date.month)
@@ -514,25 +517,24 @@ def analytics(request):
         else:
             months_count = 12
     else:
-        start_date = now - timedelta(days=365)  # Default to 12 months
+        start_date = now - timedelta(days=365)
         months_count = 12
     
-    # Filter transactions based on date range
+    # Filter transactions by date range
     transactions = Transaction.objects.filter(user=user)
     if start_date:
         transactions = transactions.filter(date__gte=start_date)
     
-    # Handle export
+    # Export report if requested
     if request.GET.get('export') == 'report':
         return export_analytics_report(request, transactions, period)
     
-    # UPDATED: Current period vs previous period comparison
+    # Compare current period vs previous period
     if period == 'ytd':
-        # For YTD, compare with same period last year
+        # Compare this year vs same period last year
         current_period_start = start_date
         current_period_end = now
         
-        # Previous period: same months last year
         prev_period_start = start_date.replace(year=start_date.year - 1)
         prev_period_end = now.replace(year=now.year - 1)
         
@@ -542,14 +544,14 @@ def analytics(request):
             date__lt=prev_period_end
         )
     elif period == 'all':
-        # For "all time", compare first half vs second half
+        # Compare first half vs second half of all data
         total_days = (now - start_date).days if start_date else 365
         mid_point = start_date + timedelta(days=total_days // 2) if start_date else now - timedelta(days=182)
         
         current_period_transactions = transactions.filter(date__gte=mid_point)
         prev_period_transactions = transactions.filter(date__lt=mid_point)
     else:
-        # For fixed periods (3, 6, 12 months), compare with previous equal period
+        # Compare with previous equal period
         current_period_start = start_date
         current_period_end = now
         
@@ -579,21 +581,21 @@ def analytics(request):
     current_spending = abs(float(current_spending))
     prev_spending = abs(float(prev_spending))
     
-    # Calculate spending change percentage
+    # Calculate percentage change in spending
     if prev_spending > 0:
         spending_change = ((current_spending - prev_spending) / prev_spending) * 100
     else:
         spending_change = 0 if current_spending == 0 else 100
     
-    # UPDATED: Average spending based on filtered period
+    # Calculate average monthly spending
     total_spending = transactions.filter(amount__lt=0).aggregate(
         total=Sum('amount'))['total'] or 0
     avg_monthly_spending = abs(float(total_spending)) / months_count if months_count > 0 else 0
     
-    # UPDATED: Total transactions for filtered period
+    # Total transactions in filtered period
     total_transactions = transactions.count()
     
-    # Monthly trends based on period (existing code is good)
+    # Build monthly spending trends
     monthly_trends = []
     if period == 'all':
         # Get all months with data
@@ -608,7 +610,7 @@ def analytics(request):
             spending = abs(float(month_data['total_spending'] or 0))
             monthly_trends.append({'month': month_name, 'spending': spending})
     else:
-        # Generate months based on period
+        # Generate months for the selected period
         current_date = start_date if start_date else now - timedelta(days=365)
         while current_date <= now:
             month_start = current_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -632,25 +634,25 @@ def analytics(request):
             if current_date >= now:
                 break
     
-    # UPDATED: Top merchants for the filtered period
+    # Find top merchants by spending
     top_merchants = transactions.filter(amount__lt=0).values('merchant').annotate(
         total=Sum('amount'),
         count=Count('transaction_id')
     ).exclude(merchant__isnull=True).exclude(merchant='').order_by('total')[:10]
     
-    # Convert to positive and format
+    # Convert to positive amounts and format
     for merchant in top_merchants:
         merchant['total'] = abs(float(merchant['total']))
         merchant['name'] = merchant['merchant']
     
-    # UPDATED: Category trends for the filtered period
+    # Calculate spending by category
     category_trends = transactions.filter(amount__lt=0).values('category').annotate(
         total=Sum('amount'),
         count=Count('transaction_id'),
         avg_transaction=models.Avg('amount')
     ).order_by('total')
     
-    # Format category trends
+    # Nice labels for categories
     category_labels = {
         'FOOD_DINING': 'Food & Dining',
         'SHOPPING': 'Shopping', 
@@ -670,7 +672,7 @@ def analytics(request):
             'avg_transaction': abs(float(cat['avg_transaction'] or 0))
         })
     
-    # UPDATED: Account performance for the filtered period
+    # Get performance data for each account
     accounts = Account.objects.filter(user=user)
     account_performance = []
     
@@ -686,19 +688,19 @@ def analytics(request):
             'balance': float(account.balance),
             'inflow': float(inflow),
             'outflow': abs(float(outflow)),
-            'net_change': float(inflow + outflow),  # outflow is negative
+            'net_change': float(inflow + outflow),
             'transaction_count': account_transactions.count()
         })
     
-    # UPDATED: Additional metrics for filtered period
+    # Calculate additional metrics
     total_inflow = transactions.filter(amount__gt=0).aggregate(Sum('amount'))['amount__sum'] or 0
     total_outflow = transactions.filter(amount__lt=0).aggregate(Sum('amount'))['amount__sum'] or 0
-    net_change = float(total_inflow) + float(total_outflow)  # outflow is negative
+    net_change = float(total_inflow) + float(total_outflow)
     
     # Average transaction amount for the period
     avg_transaction_amount = transactions.aggregate(models.Avg('amount'))['amount__avg'] or 0
     
-    # Period label for display
+    # Create nice labels for periods
     period_labels = {
         '3': 'Last 3 Months',
         '6': 'Last 6 Months', 
@@ -710,7 +712,7 @@ def analytics(request):
     
     context = {
         'current_spending': current_spending,
-        'last_spending': prev_spending,  # Now represents previous period, not just last month
+        'last_spending': prev_spending,
         'spending_change': spending_change,
         'avg_monthly_spending': avg_monthly_spending,
         'total_transactions': total_transactions,
@@ -721,7 +723,7 @@ def analytics(request):
         'period_label': period_label,
         'months_count': months_count,
         'monthly_trends': json.dumps(monthly_trends),
-        'daily_spending': json.dumps([]),  # Placeholder for daily data
+        'daily_spending': json.dumps([]),
         'top_merchants': top_merchants,
         'category_trends': formatted_category_trends,
         'account_performance': account_performance,
@@ -730,19 +732,19 @@ def analytics(request):
     return render(request, 'finance/analytics.html', context)
 
 def export_analytics_report(request, transactions, period):
-    """Export analytics data as CSV"""
+    """Export analytics data to CSV file"""
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="analytics_report_{period}_months.csv"'
     
     writer = csv.writer(response)
     
-    # Write summary data
+    # Write report header
     writer.writerow(['Analytics Report'])
     writer.writerow(['Period', f'{period} months' if period.isdigit() else period])
     writer.writerow(['Generated', timezone.now().strftime('%Y-%m-%d %H:%M')])
     writer.writerow([])
     
-    # Write transactions
+    # Write all transactions
     writer.writerow(['Date', 'Merchant', 'Category', 'Amount', 'Account'])
     for transaction in transactions.order_by('-date'):
         writer.writerow([
@@ -757,7 +759,7 @@ def export_analytics_report(request, transactions, period):
 
 def add_account(request):
     if request.method == 'POST':
-        # Get demo user if not authenticated
+        # Get user like other views
         if request.user.is_authenticated:
             user = request.user
         else:
@@ -766,7 +768,7 @@ def add_account(request):
         if not user:
             return redirect('accounts')
         
-        # Extract form data
+        # Get form data
         bank_name = request.POST.get('bank_name')
         account_type = request.POST.get('account_type')
         account_number = request.POST.get('account_number')
@@ -774,27 +776,26 @@ def add_account(request):
         balance = request.POST.get('balance')
         
         try:
-            # Create new account
+            # Create the new account
             Account.objects.create(
                 user=user,
                 bank_name=bank_name,
                 account_type=account_type,
-                iban=iban or f"TR{account_number}",  # Generate IBAN if not provided
+                iban=iban or f"TR{account_number}",
                 balance=balance or 0.00
             )
-            # Redirect back to accounts page
             return redirect('accounts')
         except Exception as e:
-            # Handle errors (duplicate IBAN, etc.)
+            # Something went wrong creating the account
             print(f"Error creating account: {e}")
             return redirect('accounts')
     
-    # If GET request, redirect to accounts page
+    # Not a POST request, just go back to accounts
     return redirect('accounts')
 
 def delete_account(request):
     if request.method == 'POST':
-        # Get demo user if not authenticated
+        # Get user like other views
         if request.user.is_authenticated:
             user = request.user
         else:
@@ -806,25 +807,20 @@ def delete_account(request):
         account_id = request.POST.get('account_id')
         
         try:
-            # Get the account
+            # Find the account to delete
             account = Account.objects.get(pk=account_id, user=user)
             
-            # Delete all related transactions first
+            # Delete all transactions for this account first
             Transaction.objects.filter(account=account).delete()
             
-            # Delete the account
+            # Now delete the account
             account.delete()
             
-            # You could add a success message here
-            # messages.success(request, f'Successfully deleted {account.bank_name} account.')
-            
         except Account.DoesNotExist:
-            # Account doesn't exist or doesn't belong to user
-            # messages.error(request, 'Account not found or access denied.')
+            # Account not found or doesn't belong to user
             pass
         except Exception as e:
-            # Handle other errors
-            # messages.error(request, f'Error deleting account: {str(e)}')
+            # Some other error happened
             print(f"Error deleting account: {e}")
     
     return redirect('accounts')

@@ -3,13 +3,11 @@
 {% block page_title %}Dashboard{% endblock %}
 
 {% block content %}
-<!-- Welcome Section -->
 <div style="margin-bottom: 32px;">
     <h2 style="color: #fafafa; font-size: 24px; font-weight: 600; margin-bottom: 8px;">Welcome back, {{ user_name }}!</h2>
     <p style="color: #71717a; font-size: 14px;">Here's your financial overview for today.</p>
 </div>
 
-<!-- Quick Stats Grid -->
 <div class="grid" style="margin-bottom: 32px;">
     <div class="card">
         <h3>Total Balance</h3>
@@ -36,9 +34,7 @@
     </div>
 </div>
 
-<!-- Charts Section -->
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
-    <!-- Spending by Category Pie Chart -->
     <div class="card">
         <h3 class="section-title">Spending by Category</h3>
         <div style="height: 400px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -56,7 +52,6 @@
         </div>
     </div>
     
-    <!-- Account Distribution Pie Chart -->
     <div class="card">
         <h3 class="section-title">Account Distribution</h3>
         <div style="height: 400px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -75,9 +70,7 @@
     </div>
 </div>
 
-<!-- Recent Activity -->
 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px;">
-    <!-- Recent Transactions -->
     <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h3 class="section-title" style="margin-bottom: 0;">Recent Transactions</h3>
@@ -110,7 +103,6 @@
         </div>
     </div>
     
-    <!-- Quick Actions -->
     <div class="card">
         <h3 class="section-title">Quick Actions</h3>
         
@@ -174,7 +166,6 @@
     </div>
 </div>
 
-<!-- AI Chat Assistant -->
 <div class="card" style="display: flex; flex-direction: column; height: 500px;">
     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #27272a;">
         <div style="
@@ -190,9 +181,7 @@
         <h3 style="color: #fafafa; font-size: 16px; font-weight: 600; margin: 0;">AI Assistant</h3>
     </div>
     
-    <!-- Chat Messages -->
     <div style="flex: 1; overflow-y: auto; margin-bottom: 16px;">
-        <!-- AI Message -->
         <div style="margin-bottom: 16px;">
             <div style="
                 background-color: #27272a;
@@ -208,7 +197,6 @@
         </div>
     </div>
     
-    <!-- Chat Input -->
     <div style="display: flex; gap: 8px;">
         <input 
             type="text" 
@@ -242,7 +230,6 @@
 </div>
 
 <script>
-// Get data from Django context
 const spendingData = {{ spending_categories|safe }};
 const accountData = {{ account_distribution|safe }};
 
@@ -274,7 +261,6 @@ function drawPieChart(canvasId, data, legendId) {
         currentAngle += sliceAngle;
     });
     
-    // Generate legend
     const legendContainer = document.getElementById(legendId);
     legendContainer.innerHTML = '';
     

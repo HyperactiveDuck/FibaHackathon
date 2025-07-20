@@ -3,7 +3,6 @@
 {% block page_title %}Transactions{% endblock %}
 
 {% block content %}
-<!-- Header with filters -->
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
     <form method="GET" id="filterForm" style="display: flex; gap: 16px; align-items: center;">
         <select name="account" onchange="submitFilters()" style="
@@ -56,7 +55,6 @@
             <option value="OTHER" {% if request.GET.category == "OTHER" %}selected{% endif %}>Other</option>
         </select>
         
-        <!-- Search Input -->
         <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search transactions..." 
                onkeyup="delayedSubmit()" style="
             background-color: #111111;
@@ -68,7 +66,6 @@
             min-width: 200px;
         ">
         
-        <!-- Clear Filters Button -->
         {% if request.GET.account or request.GET.category or request.GET.search or request.GET.date_range != "30" %}
         <button type="button" onclick="clearFilters()" style="
             background-color: #ef4444;
@@ -99,7 +96,6 @@
     </button>
 </div>
 
-<!-- Transaction Summary Cards - USING REAL DATA -->
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 32px;">
     <div class="card">
         <h3>Total Inflow</h3>
@@ -128,7 +124,6 @@
     </div>
 </div>
 
-<!-- Transactions List - USING REAL DATA -->
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <h3 class="section-title" style="margin-bottom: 0;">Recent Transactions</h3>
@@ -137,7 +132,6 @@
     
     <div id="transactionsList">
         {% for transaction in transactions %}
-        <!-- Transaction Item -->
         <div class="transaction-item" style="
             border-bottom: 1px solid #27272a; 
             padding: 16px 0; 
@@ -205,7 +199,6 @@
         {% endfor %}
     </div>
     
-    <!-- Show More/Less Button -->
     {% if transactions|length > 5 %}
     <div style="text-align: center; margin-top: 24px;">
         <button id="toggleTransactions" onclick="toggleTransactionsList()" style="
@@ -240,11 +233,10 @@ function delayedSubmit() {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
         document.getElementById('filterForm').submit();
-    }, 500); // Wait 500ms after user stops typing
+    }, 500);
 }
 
 function clearFilters() {
-    // Reset all form fields
     const form = document.getElementById('filterForm');
     const selects = form.querySelectorAll('select');
     const inputs = form.querySelectorAll('input');
@@ -257,20 +249,16 @@ function clearFilters() {
         input.value = '';
     });
     
-    // Submit the cleared form
     form.submit();
 }
 
 function exportCSV() {
-    // Get current filter parameters
     const form = document.getElementById('filterForm');
     const formData = new FormData(form);
     const params = new URLSearchParams(formData);
     
-    // Add export parameter
     params.append('export', 'csv');
     
-    // Create download link
     const url = window.location.pathname + '?' + params.toString();
     window.location.href = url;
 }
@@ -288,20 +276,17 @@ function toggleTransactionsList() {
         
         if (itemIndex > 5) {
             if (isExpanded) {
-                // Collapse
                 item.style.display = 'none';
                 item.style.opacity = '0';
             } else {
-                // Expand
                 item.style.display = 'flex';
                 setTimeout(() => {
                     item.style.opacity = '1';
-                }, 50 * (itemIndex - 5)); // Staggered animation
+                }, 50 * (itemIndex - 5));
             }
         }
     });
     
-    // Update button text and icon
     if (isExpanded) {
         toggleText.textContent = 'Show More';
         toggleIcon.style.transform = 'rotate(0deg)';
@@ -311,7 +296,6 @@ function toggleTransactionsList() {
     }
 }
 
-// Add smooth opacity transitions
 document.addEventListener('DOMContentLoaded', function() {
     const transactionItems = document.querySelectorAll('.transaction-item');
     transactionItems.forEach(item => {
