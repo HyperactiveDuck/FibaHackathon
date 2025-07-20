@@ -1,0 +1,11 @@
+user_id,name,birthdate,city,email,risk_score
+U001,Sabır Türk Eraslan,1989-05-03,Gülenport,lergul@example.org,0.85
+U002,Fatih Yaman,2005-12-23,New Ongayside,taygansakarya@example.net,0.58
+U003,Şenkal Tarhan,1977-01-06,Durmuşville,akyildiz59@example.net,0.7
+U004,Savni Güçlü,1984-09-02,Bayzettinside,corluildes@example.com,0.95
+U005,Tanpınar Soylu,1977-03-20,Lake Tulun,akarlaze@example.org,0.87
+U006,Prof. Besin Übeydullah Duran,1985-01-11,North Timurtaşhaven,tsakarya@example.net,0.3
+U007,Edaviye Züheyla Şama,1991-04-24,Port Necilal,avunc19@example.com,0.69
+U008,Ünal Yüksel,1974-04-21,East Karaer,mansizsevgen@example.com,0.47
+U009,Dr. Bitül Tarhan İnönü,1963-05-29,North Boztaş,tkaradeniz@example.net,0.48
+U010,Yalın Sezgin,1970-07-28,Lake Musaffa,rzengin@example.com,0.58
