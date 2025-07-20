@@ -76,7 +76,7 @@
                     " onmouseover="this.style.backgroundColor='#18181b'; this.style.color='#fafafa'" 
                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#a1a1aa'">Privacy</a>
                 </li>
-                <li>
+                <li style="margin-bottom: 16px;">
                     <a href="#support" style="
                         display: block;
                         padding: 12px 16px;
@@ -88,6 +88,22 @@
                         transition: all 0.2s ease;
                     " onmouseover="this.style.backgroundColor='#18181b'; this.style.color='#fafafa'" 
                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#a1a1aa'">Support</a>
+                </li>
+                <li>
+                    <a href="{% url 'logout' %}" style="
+                        display: block;
+                        padding: 12px 16px;
+                        color: #ef4444;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s ease;
+                        border: 1px solid #ef444420;
+                    " onmouseover="this.style.backgroundColor='#ef444410'; this.style.borderColor='#ef4444'" 
+                       onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='#ef444420'">
+                        🚪 Sign Out
+                    </a>
                 </li>
             </ul>
         </nav>

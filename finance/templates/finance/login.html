@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Finance Mirror</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #0a0a0a;
+            color: #e4e4e7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+        }
+        
+        .login-container {
+            background-color: #111111;
+            border: 1px solid #27272a;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fafafa;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+        
+        .login-header p {
+            color: #71717a;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a1a1aa;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            background-color: #0a0a0a;
+            border: 1px solid #27272a;
+            color: #e4e4e7;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            background-color: #22c55e;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .login-btn:hover {
+            background-color: #16a34a;
+        }
+        
+        .error {
+            background-color: #fef2f2;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            text-align: center;
+            border: 1px solid #fecaca;
+            font-size: 14px;
+        }
+        
+        .demo-users {
+            margin-top: 32px;
+            padding: 20px;
+            background-color: #0a0a0a;
+            border: 1px solid #27272a;
+            border-radius: 8px;
+        }
+        
+        .demo-users h3 {
+            color: #a1a1aa;
+            margin-bottom: 16px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+        
+        .demo-users .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #27272a;
+            font-size: 14px;
+        }
+        
+        .demo-users .user-item:last-child {
+            border-bottom: none;
+        }
+        
+        .demo-users .username {
+            color: #fafafa;
+            font-weight: 500;
+        }
+        
+        .demo-users .password {
+            color: #71717a;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .security-note {
+            margin-top: 24px;
+            padding: 16px;
+            background-color: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+        }
+        
+        .security-note .security-icon {
+            color: #3b82f6;
+            font-size: 16px;
+            margin-right: 8px;
+        }
+        
+        .security-note .security-text {
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">Finance Mirror</div>
+            <p>Sign in to access your financial dashboard</p>
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Sign In</button>
+        </form>
+        
+        <div class="demo-users">
+            <h3>Available Demo Users</h3>
+            <div class="user-item">
+                <span class="username">User ID 1</span>
+                <span class="password">Use existing credentials</span>
+            </div>
+            <div class="user-item">
+                <span class="username">User ID 2</span>
+                <span class="password">Use existing credentials</span>
+            </div>
+            <div class="user-item">
+                <span class="username">User ID 3</span>
+                <span class="password">Use existing credentials</span>
+            </div>
+        </div>
+        
+        <div class="security-note">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="security-icon">🔐</span>
+                <div class="security-text">
+                    Your login is secured with bank-level encryption and complies with PCI DSS standards.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
