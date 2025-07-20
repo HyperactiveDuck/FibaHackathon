@@ -96,6 +96,260 @@
     </button>
 </div>
 
+<!-- Fraud Report Modal -->
+<div id="fraudReportModal" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+">
+    <div style="
+        background-color: #111111;
+        border: 1px solid #27272a;
+        border-radius: 16px;
+        padding: 32px;
+        max-width: 500px;
+        width: 90%;
+        position: relative;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    ">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+            <div style="
+                width: 48px;
+                height: 48px;
+                background-color: #ef444420;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+            ">🚨</div>
+            <div>
+                <h3 style="color: #fafafa; font-size: 18px; font-weight: 600; margin-bottom: 4px;">Report Fraudulent Transaction</h3>
+                <p style="color: #ef4444; font-size: 14px; margin: 0;">Transaction ID: <span id="modalTransactionId"></span></p>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 24px;">
+            <label style="color: #e4e4e7; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
+                Reason for reporting:
+            </label>
+            <select id="fraudReason" style="
+                width: 100%;
+                background-color: #0a0a0a;
+                border: 1px solid #27272a;
+                color: #e4e4e7;
+                padding: 12px;
+                border-radius: 8px;
+                font-size: 14px;
+                margin-bottom: 16px;
+            ">
+                <option value="">Select a reason...</option>
+                <option value="unauthorized">Unauthorized transaction</option>
+                <option value="duplicate">Duplicate charge</option>
+                <option value="incorrect_amount">Incorrect amount</option>
+                <option value="unrecognized_merchant">Unrecognized merchant</option>
+                <option value="canceled_subscription">Canceled subscription still charging</option>
+                <option value="other">Other</option>
+            </select>
+            
+            <label style="color: #e4e4e7; font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
+                Additional details:
+            </label>
+            <textarea id="fraudDetails" placeholder="Please provide any additional information about this fraudulent transaction..." style="
+                width: 100%;
+                background-color: #0a0a0a;
+                border: 1px solid #27272a;
+                color: #e4e4e7;
+                padding: 12px;
+                border-radius: 8px;
+                font-size: 14px;
+                min-height: 100px;
+                resize: vertical;
+                font-family: inherit;
+            "></textarea>
+        </div>
+        
+        <div style="background-color: #f59e0b10; border: 1px solid #f59e0b40; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: start; gap: 12px;">
+                <div style="color: #f59e0b; font-size: 16px; margin-top: 2px;">⚠️</div>
+                <div>
+                    <p style="color: #f59e0b; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Important Notice</p>
+                    <p style="color: #e4e4e7; font-size: 12px; line-height: 1.4;">
+                        Reporting this transaction as fraudulent will immediately freeze your account for security. 
+                        Our fraud team will investigate and contact you within 24 hours. This action cannot be undone.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 12px;">
+            <button onclick="closeModal()" style="
+                flex: 1;
+                background-color: #27272a;
+                color: #e4e4e7;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                font-size: 14px;
+            " onmouseover="this.style.backgroundColor='#3f3f46'" onmouseout="this.style.backgroundColor='#27272a'">
+                Cancel
+            </button>
+            
+            <button onclick="submitFraudReport()" style="
+                flex: 1;
+                background-color: #ef4444;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                font-size: 14px;
+            " onmouseover="this.style.backgroundColor='#dc2626'" onmouseout="this.style.backgroundColor='#ef4444'">
+                Submit Report
+            </button>
+        </div>
+        
+        <button onclick="closeModal()" style="
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #71717a;
+            font-size: 20px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        " onmouseover="this.style.backgroundColor='#27272a'" onmouseout="this.style.backgroundColor='transparent'">
+            ✕
+        </button>
+    </div>
+</div>
+
+<!-- Suspicious Transactions Alert -->
+<div class="card" style="border: 1px solid #f59e0b40; background-color: #f59e0b05; margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <div style="
+            width: 32px;
+            height: 32px;
+            background-color: #f59e0b20;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        ">⚠️</div>
+        <div>
+            <h3 style="color: #f59e0b; font-size: 16px; font-weight: 600; margin-bottom: 2px;">Suspicious Activity Detected</h3>
+            <p style="color: #71717a; font-size: 12px; margin: 0;">{{ suspicious_transactions|length }} transactions require your attention</p>
+        </div>
+        <button onclick="toggleSuspiciousTransactions()" style="
+            margin-left: auto;
+            background-color: #f59e0b20;
+            color: #f59e0b;
+            border: 1px solid #f59e0b40;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        " onmouseover="this.style.backgroundColor='#f59e0b30'" onmouseout="this.style.backgroundColor='#f59e0b20'">
+            <span id="suspiciousToggleText">View Details</span>
+        </button>
+    </div>
+    
+    <div id="suspiciousTransactionsList" style="display: none;">
+        {% for transaction in suspicious_transactions %}
+        <div style="
+            border: 1px solid #f59e0b20;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background-color: #f59e0b05;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        ">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="
+                    width: 32px;
+                    height: 32px;
+                    background-color: #ef444420;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px;
+                ">
+                    {% if transaction.category == 'FOOD_DINING' %}🍕
+                    {% elif transaction.category == 'SHOPPING' %}🛒
+                    {% elif transaction.category == 'TRANSPORTATION' %}🚇
+                    {% elif transaction.category == 'BILLS_UTILITIES' %}⚡
+                    {% elif transaction.category == 'ENTERTAINMENT' %}🎬
+                    {% elif transaction.amount >= 0 %}💰
+                    {% else %}💳
+                    {% endif %}
+                </div>
+                <div>
+                    <h4 style="color: #fafafa; font-size: 13px; margin-bottom: 2px;">
+                        {{ transaction.merchant|default:transaction.description }}
+                    </h4>
+                    <p style="color: #71717a; font-size: 11px;">
+                        {{ transaction.date|date:"M j, Y H:i" }} • {{ transaction.account.bank_name }}
+                    </p>
+                    <p style="color: #f59e0b; font-size: 10px; margin-top: 2px;">
+                        🚨 Unusual spending pattern detected
+                    </p>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <p style="color: #ef4444; font-size: 14px; font-weight: 600;">
+                    -₺{{ transaction.amount|floatformat:2 }}
+                </p>
+                <div style="display: flex; gap: 4px; margin-top: 4px;">
+                    <button onclick="markAsNormal('{{ transaction.transaction_id }}')" style="
+                        background-color: #22c55e20;
+                        color: #22c55e;
+                        border: none;
+                        padding: 4px 8px;
+                        border-radius: 4px;
+                        font-size: 10px;
+                        cursor: pointer;
+                    ">Normal</button>
+                    <button onclick="openFraudModal('{{ transaction.transaction_id }}')" style="
+                        background-color: #ef444420;
+                        color: #ef4444;
+                        border: none;
+                        padding: 4px 8px;
+                        border-radius: 4px;
+                        font-size: 10px;
+                        cursor: pointer;
+                    ">Report</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 32px;">
     <div class="card">
         <h3>Total Inflow</h3>
@@ -224,6 +478,7 @@
 
 <script>
 let searchTimeout;
+let currentTransactionId = null;
 
 function submitFilters() {
     document.getElementById('filterForm').submit();
@@ -296,6 +551,93 @@ function toggleTransactionsList() {
     }
 }
 
+function toggleSuspiciousTransactions() {
+    const list = document.getElementById('suspiciousTransactionsList');
+    const toggleText = document.getElementById('suspiciousToggleText');
+    
+    if (list.style.display === 'none') {
+        list.style.display = 'block';
+        toggleText.textContent = 'Hide Details';
+    } else {
+        list.style.display = 'none';
+        toggleText.textContent = 'View Details';
+    }
+}
+
+function markAsNormal(transactionId) {
+    const button = event.target;
+    button.style.backgroundColor = '#22c55e';
+    button.style.color = 'white';
+    button.textContent = 'Marked ✓';
+    button.disabled = true;
+    
+    console.log('Marking transaction', transactionId, 'as normal');
+}
+
+function openFraudModal(transactionId) {
+    currentTransactionId = transactionId;
+    document.getElementById('modalTransactionId').textContent = transactionId;
+    document.getElementById('fraudReason').selectedIndex = 0;
+    document.getElementById('fraudDetails').value = '';
+    
+    const modal = document.getElementById('fraudReportModal');
+    modal.style.display = 'flex';
+    modal.style.opacity = '0';
+    modal.style.transform = 'scale(0.95)';
+    
+    setTimeout(() => {
+        modal.style.opacity = '1';
+        modal.style.transform = 'scale(1)';
+    }, 10);
+}
+
+function closeModal() {
+    const modal = document.getElementById('fraudReportModal');
+    modal.style.opacity = '0';
+    modal.style.transform = 'scale(0.95)';
+    
+    setTimeout(() => {
+        modal.style.display = 'none';
+        currentTransactionId = null;
+    }, 200);
+}
+
+function submitFraudReport() {
+    const reason = document.getElementById('fraudReason').value;
+    const details = document.getElementById('fraudDetails').value;
+    
+    if (!reason) {
+        alert('Please select a reason for reporting this transaction.');
+        return;
+    }
+    
+    // Here you would make an AJAX call to submit the fraud report
+    console.log('Submitting fraud report for transaction:', currentTransactionId);
+    console.log('Reason:', reason);
+    console.log('Details:', details);
+    
+    // Update the button that was clicked
+    const buttons = document.querySelectorAll('button[onclick*="' + currentTransactionId + '"]');
+    buttons.forEach(button => {
+        if (button.textContent === 'Report') {
+            button.style.backgroundColor = '#ef4444';
+            button.style.color = 'white';
+            button.textContent = 'Reported ✓';
+            button.disabled = true;
+            button.onclick = null;
+        }
+    });
+    
+    closeModal();
+}
+
+// Close modal when clicking outside
+document.getElementById('fraudReportModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     const transactionItems = document.querySelectorAll('.transaction-item');
     transactionItems.forEach(item => {
@@ -304,6 +646,10 @@ document.addEventListener('DOMContentLoaded', function() {
             item.style.opacity = '1';
         }
     });
+    
+    // Add transition effects to modal
+    const modal = document.getElementById('fraudReportModal');
+    modal.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
 });
 </script>
 {% endblock %}

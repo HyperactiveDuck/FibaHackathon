@@ -228,6 +228,9 @@ def transactions(request):
     # Start with all user transactions
     transactions = Transaction.objects.filter(user=user)
     
+    # Get suspicious transactions - pick 10 specific ones by transaction_id to avoid randomization
+    suspicious_transactions = Transaction.objects.filter(user=user, amount__lt=0).order_by('transaction_id')[:10]
+    
     # Filter by account if selected
     account_filter = request.GET.get('account')
     if account_filter:
@@ -319,6 +322,7 @@ def transactions(request):
     context = {
         'transactions': transactions,
         'accounts': accounts,
+        'suspicious_transactions': suspicious_transactions,
         'total_inflow': float(total_inflow),
         'total_outflow': float(abs(total_outflow)),
         'net_change': float(net_change),

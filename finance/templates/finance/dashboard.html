@@ -8,6 +8,131 @@
     <p style="color: #71717a; font-size: 14px;">Here's your financial overview for today.</p>
 </div>
 
+<!-- Security Alert Popup -->
+<div id="securityAlert" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+">
+    <div style="
+        background-color: #111111;
+        border: 1px solid #27272a;
+        border-radius: 16px;
+        padding: 32px;
+        max-width: 480px;
+        width: 90%;
+        position: relative;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    ">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+            <div style="
+                width: 48px;
+                height: 48px;
+                background-color: #f59e0b20;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+            ">🔒</div>
+            <div>
+                <h3 style="color: #fafafa; font-size: 18px; font-weight: 600; margin-bottom: 4px;">Suspicious Login Detected</h3>
+                <p style="color: #f59e0b; font-size: 14px; margin: 0;">New device login from Istanbul, Turkey</p>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 24px;">
+            <p style="color: #e4e4e7; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
+                We detected a login to your account from a device we don't recognize:
+            </p>
+            
+            <div style="background-color: #0a0a0a; border: 1px solid #27272a; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: #a1a1aa; font-size: 12px;">Device:</span>
+                    <span style="color: #e4e4e7; font-size: 12px;">iPhone 15 Pro • Safari</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: #a1a1aa; font-size: 12px;">Location:</span>
+                    <span style="color: #e4e4e7; font-size: 12px;">Istanbul, Turkey</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: #a1a1aa; font-size: 12px;">Time:</span>
+                    <span style="color: #e4e4e7; font-size: 12px;">Today at 14:32</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #a1a1aa; font-size: 12px;">IP Address:</span>
+                    <span style="color: #e4e4e7; font-size: 12px;">185.94.188.xxx</span>
+                </div>
+            </div>
+            
+            <p style="color: #71717a; font-size: 13px; line-height: 1.5;">
+                If this was you, you can safely ignore this alert. If you don't recognize this activity, 
+                please secure your account immediately.
+            </p>
+        </div>
+        
+        <div style="display: flex; gap: 12px;">
+            <button onclick="closeSecurityAlert()" style="
+                flex: 1;
+                background-color: #22c55e;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                font-size: 14px;
+            " onmouseover="this.style.backgroundColor='#16a34a'" onmouseout="this.style.backgroundColor='#22c55e'">
+                This was me
+            </button>
+            
+            <button onclick="secureAccount()" style="
+                flex: 1;
+                background-color: #ef4444;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+                font-size: 14px;
+            " onmouseover="this.style.backgroundColor='#dc2626'" onmouseout="this.style.backgroundColor='#ef4444'">
+                Secure Account
+            </button>
+        </div>
+        
+        <button onclick="closeSecurityAlert()" style="
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #71717a;
+            font-size: 20px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        " onmouseover="this.style.backgroundColor='#27272a'" onmouseout="this.style.backgroundColor='transparent'">
+            ✕
+        </button>
+    </div>
+</div>
+
 <div class="grid" style="margin-bottom: 32px;">
     <div class="card">
         <h3>Total Balance</h3>
@@ -333,6 +458,20 @@ function sendMessage(input) {
     }, 1000);
 }
 
+function closeSecurityAlert() {
+    const alert = document.getElementById('securityAlert');
+    alert.style.opacity = '0';
+    alert.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        alert.style.display = 'none';
+    }, 200);
+}
+
+function secureAccount() {
+    alert('Account security measures activated. Please change your password and review your security settings.');
+    closeSecurityAlert();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     if (spendingData.length > 0) {
         drawPieChart('spendingChart', spendingData, 'spendingLegend');
@@ -340,6 +479,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (accountData.length > 0) {
         drawPieChart('accountChart', accountData, 'accountLegend');
     }
+    
+    // Show security alert after 2 seconds
+    setTimeout(() => {
+        const alert = document.getElementById('securityAlert');
+        alert.style.opacity = '1';
+        alert.style.transform = 'scale(1)';
+    }, 2000);
+    
+    // Add transition effects
+    const alert = document.getElementById('securityAlert');
+    alert.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+    alert.style.opacity = '0';
+    alert.style.transform = 'scale(0.95)';
 });
 </script>
 {% endblock %}
