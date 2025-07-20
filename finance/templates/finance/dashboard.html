@@ -403,7 +403,7 @@ function drawPieChart(canvasId, data, legendId) {
     });
 }
 
-function sendMessage(input) {
+async function sendMessage(input) {
     const message = input.value.trim();
     if (!message) return;
     
@@ -429,15 +429,42 @@ function sendMessage(input) {
     input.value = '';
     chatContainer.scrollTop = chatContainer.scrollHeight;
     
-    setTimeout(() => {
-        const responses = [
-            "Based on your spending data, I can help you optimize your budget. What specific area would you like to focus on?",
-            "I see you've been spending on food delivery. Cooking at home 2-3 times a week could save you ₺200+ monthly.",
-            "Your transportation costs seem reasonable. Have you considered public transport for additional savings?",
-            "Great question! Let me analyze your recent transactions to provide personalized insights."
-        ];
+    // Show typing indicator
+    const typingIndicator = `
+        <div id="typing-indicator" style="margin-bottom: 16px;">
+            <div style="
+                background-color: #27272a;
+                padding: 12px;
+                border-radius: 12px 12px 12px 4px;
+                margin-bottom: 4px;
+            ">
+                <p style="color: #71717a; font-size: 13px; line-height: 1.4;">AI is thinking...</p>
+            </div>
+        </div>
+    `;
+    chatContainer.innerHTML += typingIndicator;
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    
+    try {
+        // Make request to MCP API
+        const response = await fetch('http://localhost:3000/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                query: message
+            })
+        });
         
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Remove typing indicator
+        document.getElementById('typing-indicator').remove();
         
         const aiMessage = `
             <div style="margin-bottom: 16px;">
@@ -447,7 +474,7 @@ function sendMessage(input) {
                     border-radius: 12px 12px 12px 4px;
                     margin-bottom: 4px;
                 ">
-                    <p style="color: #e4e4e7; font-size: 13px; line-height: 1.4;">${randomResponse}</p>
+                    <p style="color: #e4e4e7; font-size: 13px; line-height: 1.4;">${data.response || 'I received your message but encountered an issue processing it.'}</p>
                 </div>
                 <p style="color: #71717a; font-size: 10px;">Just now</p>
             </div>
@@ -455,7 +482,37 @@ function sendMessage(input) {
         
         chatContainer.innerHTML += aiMessage;
         chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 1000);
+        
+    } catch (error) {
+        console.error('Error calling MCP API:', error);
+        
+        // Remove typing indicator
+        const typingElement = document.getElementById('typing-indicator');
+        if (typingElement) {
+            typingElement.remove();
+        }
+        
+        // Show error message
+        const errorMessage = `
+            <div style="margin-bottom: 16px;">
+                <div style="
+                    background-color: #ef444420;
+                    border: 1px solid #ef4444;
+                    padding: 12px;
+                    border-radius: 12px 12px 12px 4px;
+                    margin-bottom: 4px;
+                ">
+                    <p style="color: #ef4444; font-size: 13px; line-height: 1.4;">
+                        Sorry, I'm having trouble connecting to the AI service. Please make sure the MCP server is running on localhost:3000.
+                    </p>
+                </div>
+                <p style="color: #71717a; font-size: 10px;">Just now</p>
+            </div>
+        `;
+        
+        chatContainer.innerHTML += errorMessage;
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 }
 
 function closeSecurityAlert() {
