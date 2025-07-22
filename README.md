@@ -1050,6 +1050,546 @@ Destek ve sorular için:
 - [ ] Gelişmiş güvenlik özellikleri (2FA)
 - [ ] Özel raporlama ve paneller
 
+
+
 ---
 
-**Built with ❤️ for the Fibabanka Hackathon / Fibabanka Hackathon için ❤️ ile geliştirilmiştir**
+# MCP Open Banking Server
+
+A Python-based Model Context Protocol (MCP) server that provides open banking functionalities for financial data processing and analysis. This server integrates with the Finance Mirror dashboard to deliver AI-powered banking insights through Claude AI.
+
+## Overview
+
+This MCP server acts as a bridge between banking data and AI models, enabling sophisticated financial analysis through the Model Context Protocol. It processes banking transactions, account information, and user data to provide intelligent insights and responses through Claude AI integration.
+
+## Project Structure
+
+```
+mcp-open-banking/
+├── main.py                    # Main MCP server implementation
+├── pyproject.toml            # Python project configuration and dependencies
+├── README.md                 # This documentation file
+├── transactions.csv          # Sample transaction data
+├── uv.lock                   # UV package manager lock file
+├── datas/                    # Data directory
+│   ├── accounts.csv         # Sample account data
+│   └── users.csv            # Sample user data
+└── helpers/                  # Utility modules
+    ├── csvparser.py         # CSV data parsing utilities
+    └── __pycache__/         # Python compiled bytecode cache
+        ├── csvparser.cpython-311.pyc
+        └── csvparser.cpython-312.pyc
+```
+
+## Features
+
+- **MCP Protocol Integration**: Implements Model Context Protocol for AI tool interactions
+- **Banking Data Processing**: Handles transactions, accounts, and user data
+- **CSV Data Management**: Efficient parsing and processing of banking CSV files
+- **Financial Analytics**: Provides tools for transaction analysis and insights
+- **Claude AI Compatible**: Works seamlessly with Anthropic's Claude AI models
+- **Open Banking Standards**: Follows open banking data formats and practices
+
+## Prerequisites
+
+- Python 3.11 or 3.12 (based on compiled bytecode presence)
+- UV package manager (recommended) or pip
+- Access to banking CSV data files
+
+## Installation
+
+### Using UV (Recommended)
+```bash
+# Navigate to the project directory
+cd /home/yadhere/Documents/FibaHackathon/mcp-open-banking
+
+# Install dependencies with UV
+uv sync
+```
+
+### Using Pip
+```bash
+# Navigate to the project directory
+cd /home/yadhere/Documents/FibaHackathon/mcp-open-banking
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -e .
+```
+
+## Usage
+
+### Starting the MCP Server
+
+```bash
+# Run the main server
+python main.py
+```
+
+### Integration with MCP Client
+
+This server is designed to work with the TypeScript MCP client in the parent project:
+
+```bash
+# From the main project directory
+cd mcp-client-typescript
+node build/index.js ../mcp-open-banking/main.py
+```
+
+## Data Files
+
+### transactions.csv
+Contains sample transaction data with fields like:
+- Transaction ID
+- Account ID
+- Amount
+- Date
+- Merchant
+- Category
+- Description
+
+### datas/accounts.csv
+Contains account information including:
+- Account ID
+- User ID
+- Bank Name
+- Account Type
+- Balance
+- Account Number
+
+### datas/users.csv
+Contains user profile data such as:
+- User ID
+- Name
+- Email
+- Phone
+- Address
+- Registration Date
+
+## Helper Modules
+
+### csvparser.py
+Utility module for parsing and processing CSV banking data files. Provides functions for:
+- Loading CSV data into Python data structures
+- Data validation and cleaning
+- Format conversion for MCP protocol
+- Error handling for malformed data
+
+## MCP Tools
+
+The server implements various MCP tools for financial analysis:
+
+- **Transaction Analysis**: Analyze spending patterns and trends
+- **Account Summary**: Get account balances and status
+- **Category Breakdown**: Spending analysis by category
+- **Fraud Detection**: Identify suspicious transactions
+- **Budget Tracking**: Monitor spending against budgets
+- **Financial Insights**: AI-powered financial recommendations
+
+## Configuration
+
+### pyproject.toml
+The project configuration file defines:
+- Project metadata
+- Python dependencies
+- Build system requirements
+- Development dependencies
+- Entry points for the MCP server
+
+Example configuration structure:
+```toml
+[project]
+name = "mcp-open-banking"
+version = "1.0.0"
+description = "MCP server for open banking functionality"
+dependencies = [
+    "mcp",
+    "pandas",
+    "numpy",
+    # other dependencies
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+
+## Development
+
+### Adding New Tools
+To add new MCP tools to the server:
+
+1. Define the tool in `main.py`
+2. Implement the tool handler function
+3. Register the tool with the MCP server
+4. Update data processing in `helpers/csvparser.py` if needed
+
+### Data Processing
+To modify data processing:
+
+1. Edit `helpers/csvparser.py` for CSV parsing logic
+2. Add new data validation rules
+3. Implement new data transformation functions
+4. Test with sample data files
+
+### Testing
+```bash
+# Run tests (if test files are added)
+python -m pytest
+
+# Manual testing with sample data
+python -c "from helpers.csvparser import *; test_data_loading()"
+```
+
+## Integration with Finance Mirror
+
+This MCP server integrates with the main Finance Mirror Django application by:
+
+1. **Data Source**: Providing financial data through MCP protocol
+2. **AI Assistant**: Enabling Claude AI to answer financial queries
+3. **Real-time Analysis**: Processing transaction data for insights
+4. **API Bridge**: Acting as middleware between banking data and AI
+
+### Connection Flow
+```
+Finance Mirror Dashboard ←→ MCP TypeScript Client ←→ MCP Open Banking Server ←→ Banking Data (CSV)
+```
+
+## Security Considerations
+
+- **Data Privacy**: Ensure CSV files contain only anonymized/test data
+- **Access Control**: Implement proper authentication for production use
+- **Data Validation**: Validate all incoming data before processing
+- **Error Handling**: Graceful handling of malformed or missing data
+
+## Troubleshooting
+
+### Common Issues
+
+**1. Module Import Errors**
+```bash
+# Ensure proper installation
+uv sync
+# or
+pip install -e .
+```
+
+**2. CSV File Not Found**
+```bash
+# Check file paths in main.py
+# Ensure CSV files are in correct locations
+ls -la datas/
+ls -la transactions.csv
+```
+
+**3. Python Version Compatibility**
+```bash
+# Check Python version
+python --version
+# Ensure using Python 3.11 or 3.12
+```
+
+**4. MCP Protocol Errors**
+```bash
+# Check MCP client connection
+# Verify server is responding to MCP requests
+# Review server logs for errors
+```
+
+### Debugging
+```bash
+# Run with verbose output
+python main.py --verbose
+
+# Check CSV data integrity
+python -c "from helpers.csvparser import validate_csv_data; validate_csv_data()"
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add new tools or improve data processing
+4. Test with sample data
+5. Submit a pull request
+
+### Code Style
+- Follow PEP 8 for Python code
+- Add docstrings to all functions
+- Include type hints where possible
+- Write tests for new functionality
+
+## License
+
+This project is part of the Finance Mirror application and follows the same Apache License 2.0.
+
+## Related Projects
+
+- [Finance Mirror Dashboard](../README.md) - Main Django application
+- [MCP Client TypeScript](../mcp-client-typescript/README.md) - TypeScript MCP client
+- [Model Context Protocol](https://github.com/modelcontextprotocol) - MCP specification
+
+---
+
+**Built with ❤️ for the Fibabanka Hackathon**
+
+**Version**: 1.0.0  
+**Python**: 3.11/3.12  
+**MCP Protocol**: Compatible  
+**Last Updated**: January 2024
+
+---
+
+# MCP Client TypeScript
+
+A TypeScript client for interacting with Model Context Protocol (MCP) servers through Claude AI. This project provides both a CLI interface and an HTTP API server for processing queries using MCP tools.
+
+## Overview
+
+This MCP (Model Context Protocol) client serves as a bridge between Claude AI and various MCP servers, enabling sophisticated tool interactions and data processing. The client can spawn MCP servers (Python or JavaScript), communicate with them via the MCP protocol, and process user queries through Claude AI using the available tools.
+
+## Features
+
+- **HTTP API Server**: RESTful endpoints for health checks and chat processing
+- **MCP Server Management**: Automatic spawning and management of MCP server processes
+- **Claude AI Integration**: Seamless integration with Anthropic's Claude AI models
+- **Cross-Platform Support**: Works on Windows, macOS, and Linux
+- **TypeScript**: Full type safety and modern JavaScript features
+- **Error Handling**: Comprehensive error handling and graceful shutdown
+
+## Prerequisites
+
+Before running this project, ensure you have:
+
+- **Node.js 18+**: Required for running the TypeScript application
+- **Python 3.12**: Required for Python MCP servers
+- **npm**: For dependency management
+- **Anthropic API Key**: Required for Claude AI integration
+
+## Installation
+
+1. **Clone the repository** (if not already done):
+   ```bash
+   git clone <repository-url>
+   cd mcp-client-typescript
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**:
+   Create a `.env` file in the root directory:
+   ```env
+   ANTHROPIC_API_KEY=your_anthropic_api_key_here
+   PORT=3000
+   ```
+
+4. **Build the project**:
+   ```bash
+   npm run build
+   ```
+
+## Usage
+
+### Starting the Server
+
+Run the application with a path to your MCP server script:
+
+```bash
+node build/index.js <path_to_server_script>
+```
+
+**Examples:**
+```bash
+# For a Python MCP server
+node build/index.js ./servers/my-python-server.py
+
+# For a JavaScript MCP server
+node build/index.js ./servers/my-js-server.js
+
+# Using relative paths
+node build/index.js ../mcp-open-banking/main.py
+```
+
+### API Endpoints
+
+Once the server is running, you can interact with it through the following endpoints:
+
+#### Health Check
+```http
+GET /health
+```
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "tools": ["tool1", "tool2", "tool3"]
+}
+```
+
+#### Chat/Query Processing
+```http
+POST /chat
+Content-Type: application/json
+
+{
+  "query": "Your question or request here"
+}
+```
+
+**Response:**
+```json
+{
+  "response": "Claude's response using MCP tools"
+}
+```
+
+### Example Usage
+
+```bash
+# Start the server
+node build/index.js ./my-mcp-server.py
+
+# In another terminal, test the API
+curl -X POST http://localhost:3000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What tools are available?"}'
+```
+
+## Development
+
+### Scripts
+
+- `npm run build`: Compile TypeScript to JavaScript
+- `npm test`: Run tests (currently not implemented)
+
+### Project Structure
+
+```
+mcp-client-typescript/
+├── index.ts          # Main application file
+├── package.json      # Dependencies and scripts
+├── tsconfig.json     # TypeScript configuration
+├── build/            # Compiled JavaScript output
+│   └── index.js
+└── README.md         # This file
+```
+
+### Building from Source
+
+1. Make changes to `index.ts`
+2. Rebuild the project:
+   ```bash
+   npm run build
+   ```
+3. Run the updated version:
+   ```bash
+   node build/index.js <server_path>
+   ```
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `ANTHROPIC_API_KEY` | Your Anthropic API key (required) | - |
+| `PORT` | Port for the HTTP server | 3000 |
+
+### TypeScript Configuration
+
+The project uses the following TypeScript configuration:
+- Target: ES2022
+- Module: Node16
+- Strict mode enabled
+- Output directory: `./build`
+
+## Dependencies
+
+### Production Dependencies
+- `@anthropic-ai/sdk`: Claude AI integration
+- `@modelcontextprotocol/sdk`: MCP protocol implementation
+- `express`: HTTP server framework
+- `cors`: Cross-origin resource sharing
+- `dotenv`: Environment variable management
+
+### Development Dependencies
+- `typescript`: TypeScript compiler
+- `@types/node`: Node.js type definitions
+- `@types/express`: Express type definitions
+- `@types/cors`: CORS type definitions
+
+## Error Handling
+
+The application includes comprehensive error handling:
+- Missing API key validation
+- Server connection failures
+- Invalid query processing
+- Graceful shutdown on SIGINT
+
+## Platform Support
+
+- **Windows**: Uses `py -3.12` for Python servers
+- **Unix/Linux/macOS**: Uses `python3.12` for Python servers
+- **JavaScript servers**: Uses Node.js on all platforms
+
+## Integration with Finance Mirror
+
+This MCP client is designed to work with the Finance Mirror dashboard by providing AI-powered financial insights and tool interactions. It can be integrated with the main Django application to enhance the user experience with intelligent financial advice.
+
+### Connection to Main Project
+
+```bash
+# From the main project directory
+cd mcp-client-typescript
+npm install
+npm run build
+
+# Start the MCP client server
+node build/index.js ../mcp-open-banking/main.py
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Missing ANTHROPIC_API_KEY**: Ensure your `.env` file contains a valid API key
+2. **Python server not found**: Make sure Python 3.12 is installed and accessible
+3. **Port already in use**: Change the PORT environment variable or stop other services using port 3000
+4. **MCP server connection fails**: Verify the server script path and that the server is compatible with MCP
+
+### Getting Help
+
+- Check the console output for detailed error messages
+- Ensure all dependencies are installed with `npm install`
+- Verify your MCP server is working independently
+- Test the API endpoints with curl or a REST client
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Build and test
+5. Submit a pull request
+
+## License
+
+This project is part of the Finance Mirror application and follows the same Apache License 2.0.
+
+## Related Projects
+
+- [Model Context Protocol](https://github.com/modelcontextprotocol)
+- [Anthropic SDK](https://github.com/anthropics/anthropic-sdk-typescript)
+- [Finance Mirror Dashboard](../README.md) - Main Django application
+
+---
+
+**Built with ❤️ for the Fibabanka Hackathon**
+
