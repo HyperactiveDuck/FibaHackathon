@@ -1053,7 +1053,8 @@ Destek ve sorular için:
 
 
 ---
-
+#MCP
+---
 # MCP Open Banking Server
 
 A Python-based Model Context Protocol (MCP) server that provides open banking functionalities for financial data processing and analysis. This server integrates with the Finance Mirror dashboard to deliver AI-powered banking insights through Claude AI.
